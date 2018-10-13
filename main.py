@@ -326,7 +326,7 @@ def multiplayer_screen():
     dead_sprites_list = pygame.sprite.Group()
 
     num_health = 3
-    num_health2 = 7
+    num_health2 = 6
     hearts = []
     hearts2 = []
 
@@ -353,7 +353,7 @@ def multiplayer_screen():
     main_player.rect.x = 20
     main_player.rect.y = HEIGHT / 2
 
-    player2.rect.x = 1280 - 20
+    player2.rect.x = 1280 - 40
     player2.rect.y = HEIGHT / 2
 
     invincible = False  # After-hit invincibility state
