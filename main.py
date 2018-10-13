@@ -188,7 +188,10 @@ def singleplayer_screen():
         counting_string = "%d:%d" % (counting_minutes, counting_seconds)
 
         #counting_rect = counting_text.get_rect(midtop=screen.get_rect().midtop)
+        counting_text = debug_font.render(str(counting_string), 1, (255, 255, 255))
+        counting_rect = counting_text.get_rect(midtop=screen.get_rect().midtop)
 
+        screen.blit(counting_text, counting_rect)
         if int(counting_minutes) == 4 and counting_seconds == 0:
             game_loop = False
         #screen.blit(counting_text, counting_rect)
