@@ -9,6 +9,7 @@ from main_menu import Main_menu
 from basic_zombie import BasicZombie
 from flying_zombie import FlyingZombie
 from drawing_manager import *
+from sound_manager import *
 
 # Game initialisation begins
 
@@ -28,7 +29,7 @@ timer_font = pygame.font.SysFont('Courier', 32)
 
 # Event definitions
 events = {PLAYERS_CAN_SHOOT: {"interval": 400, "count": 0},
-          BASIC_ZOMBIE_SPAWN: {"interval": 100000, "count": 0},
+          BASIC_ZOMBIE_SPAWN: {"interval": 500, "count": 0},
           FLYING_ZOMBIE_SPAWN: {"interval": 5000, "count": 0},
           FLYING_ZOMBIES_CAN_SHOOT: {"interval": 4000, "count":0 }}
 
@@ -204,7 +205,10 @@ def singleplayer_screen():
 
         # Game logic
         
+
         for enemy in pygame.sprite.groupcollide(bullet_sprites_list, enemy_sprites_list, 1, 0).values():
+            bullet_hit_sound.play()
+            zombie_hit_sound.play()
             dead_sprites_list.add(enemy[0])
             enemy[0].dead = True
             enemy_sprites_list.remove(enemy[0])
@@ -212,6 +216,8 @@ def singleplayer_screen():
         # Kills player when they collide with enemy
         for player in pygame.sprite.groupcollide(player_sprites_list, enemy_sprites_list, 0, 0):
             if not invincible:
+                zombie_attack_melee_sound.play()
+                player_hit.play()
                 current = hearts[-1]
                 current.kill()
                 del hearts[-1]
@@ -220,6 +226,8 @@ def singleplayer_screen():
 
         for player in pygame.sprite.groupcollide(player_sprites_list, spit_sprites, 0, 1):
             if not invincible:
+                bullet_hit_sound.play()
+                player_hit.play()
                 current = hearts[-1]
                 current.kill()
                 del hearts[-1]
