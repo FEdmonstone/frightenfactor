@@ -16,11 +16,16 @@ class FlyingZombie(Enemy):
         self.animation_counter = 0
         self.can_shoot = False
         self.spitting_interval = random.randint(2000, 3500)
+        
+        self.dead = False
 
 
     def move(self):
-        self.image = self.move_sprites[(self.animation_counter // 10) % len(self.move_sprites)]
-        self.animation_counter += 1
+        if self.dead:
+            self.image = pygame.transform.scale(pygame.image.load("Assets/Sprites/blood.png"), (64, 64))
+        else:
+            self.image = self.move_sprites[(self.animation_counter // 10) % len(self.move_sprites)]
+            self.animation_counter += 1
         super().move()
 
         if self.can_shoot:
