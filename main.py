@@ -317,11 +317,13 @@ def singleplayer_screen():
         generate_time_based_events()
 
 def multiplayer_screen():
+    stage_theme.play(loops=-1)
     player_sprites_list = pygame.sprite.Group()
     player2_sprites_list = pygame.sprite.Group()
     enemy_sprites_list = pygame.sprite.Group()
     bullet_sprites_list = pygame.sprite.Group()
     health_sprites_list = pygame.sprite.Group()
+    dead_sprites_list = pygame.sprite.Group()
 
     num_health = 3
     num_health2 = 7
@@ -395,6 +397,12 @@ def multiplayer_screen():
                     new_enemy.rect.x = WIDTH - 64
                     new_enemy.rect.y = random.randint(0, borders[2] - 64)
                     enemy_sprites_list.add(new_enemy)
+
+                elif event.dict["subtype"] == FLYING_ZOMBIES_CAN_SHOOT:
+                    for enemy in enemy_sprites_list:
+                        if isinstance(enemy, FlyingZombie):
+                            enemy.can_shoot = True
+
         keys = pygame.key.get_pressed()
         # Movement event
         if keys[keybindings['left']]:
@@ -441,13 +449,12 @@ def multiplayer_screen():
 
         # Game logic
         # Kills enemy when they collide with player
-        for enemy in pygame.sprite.groupcollide(bullet_sprites_list, player2_sprites_list, 1, 0):
-            if not invincible:
-                current = hearts2[-1]
-                current.kill()
-                del hearts2[-1]
-                invincible = True
-                pygame.time.set_timer(INVINCIBILITY_END, INVINCIBILITY_DURATION)
+        for enemy in pygame.sprite.groupcollide(bullet_sprites_list, enemy_sprites_list, 1, 0).values():
+            bullet_hit_sound.play()
+            zombie_hit_sound.play()
+            dead_sprites_list.add(enemy[0])
+            enemy[0].dead = True
+            enemy_sprites_list.remove(enemy[0])
         if not hearts2:
             global current_state
             current_state = screen_states['mainmenu']
@@ -455,6 +462,8 @@ def multiplayer_screen():
 
         for player in pygame.sprite.groupcollide(player_sprites_list, enemy_sprites_list, 0, 0):
             if not invincible:
+                zombie_attack_melee_sound.play()
+                player_hit.play()
                 current = hearts[-1]
                 current.kill()
                 del hearts[-1]
@@ -463,6 +472,8 @@ def multiplayer_screen():
 
         for player in pygame.sprite.groupcollide(player_sprites_list, player2_sprites_list, 0, 0):
             if not invincible:
+                zombie_attack_melee_sound.play()
+                player_hit.play()
                 current = hearts[-1]
                 current.kill()
                 del hearts[-1]
@@ -475,6 +486,8 @@ def multiplayer_screen():
 
         for player in pygame.sprite.groupcollide(player2_sprites_list, player_sprites_list, 0, 0):
             if not invincible:
+                bullet_hit_sound.play()
+                zombie_hit_sound.play()
                 current = hearts[-1]
                 current.kill()
                 del hearts[-1]
@@ -492,6 +505,8 @@ def multiplayer_screen():
         enemy_sprites_list.update()
         bullet_sprites_list.update()
         health_sprites_list.update()
+        spit_sprites.update()
+        dead_sprites_list.update()
 
         # Drawing logic
         offset += 1
@@ -516,11 +531,13 @@ def multiplayer_screen():
         counting_text = timer_font.render(str(counting_string), True, WHITE)
         screen.blit(counting_text, (WIDTH / 2, 10))
 
+        dead_sprites_list.draw(screen)
         player_sprites_list.draw(screen)
         player2_sprites_list.draw(screen)
         enemy_sprites_list.draw(screen)
         bullet_sprites_list.draw(screen)
         health_sprites_list.draw(screen)
+        spit_sprites.draw(screen)
 
         # Screen update
         pygame.display.flip()
