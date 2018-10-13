@@ -200,10 +200,11 @@ def singleplayer_screen():
 
 
         # Game logic
-        # Kills enemy when they collide with player
+        
         for enemy in pygame.sprite.groupcollide(bullet_sprites_list, enemy_sprites_list, 1, 1):
             pass
 
+        # Kills player when they collide with enemy
         for player in pygame.sprite.groupcollide(player_sprites_list, enemy_sprites_list, 0, 0):
             if not invincible:
                 current = hearts[-1]

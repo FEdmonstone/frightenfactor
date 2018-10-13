@@ -12,9 +12,9 @@ class Main_menu(pygame.sprite.Sprite):
         self.button_sprites_list = pygame.sprite.Group()
 
         self.singleplayer = self.create_button(self.WIDTH/2, self.HEIGHT/2, 256, 64, 'singleplayer')
-        self.singleplayer = self.create_button(self.WIDTH/2, self.HEIGHT/2 + 96, 256, 64, 'multiplayer')
-        self.singleplayer = self.create_button(self.WIDTH/2, self.HEIGHT/2 + 192, 256, 64, 'options')
-        self.singleplayer = self.create_button(self.WIDTH/2, self.HEIGHT/2 + 288, 256, 64, 'quit')
+        self.multiplayer = self.create_button(self.WIDTH/2, self.HEIGHT/2 + 96, 256, 64, 'multiplayer')
+        self.options = self.create_button(self.WIDTH/2, self.HEIGHT/2 + 192, 256, 64, 'options')
+        self.quit = self.create_button(self.WIDTH/2, self.HEIGHT/2 + 288, 256, 64, 'quit')
 
     def create_button(self, x, y, width, height, button_type):
         tempbutton = Button(width, height, button_type)
