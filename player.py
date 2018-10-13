@@ -1,4 +1,4 @@
-import pygame
+import pygame, os
 from bullet import Bullet
 WHITE = (255, 255, 255)
 
@@ -6,20 +6,20 @@ class Player(pygame.sprite.Sprite):
     def __init__(self, colour, width, height):
         super().__init__()
 
-        self.change_size(width, height)
+        move_left_sprites_path = "Assets/Sprites/Player/Left"
+        move_right_sprites_path = "Assets/Sprites/Player/Right"
+        move_up_sprites_path = "Assets/Sprites/Player/Up"
+        move_down_sprites_path = "Assets/Sprites/Player/Down"
 
-        self.stationary_sprite_left = pygame.image.load("Assets/Sprites/mc_stationary_left.png")
-        self.stationary_sprite_right = pygame.image.load("Assets/Sprites/mc_stationary_right.png")
+        self.left_sprites = [pygame.image.load(os.path.join(move_left_sprites_path, img)) for img in os.listdir(move_left_sprites_path)]
+        self.right_sprites = [pygame.image.load(os.path.join(move_right_sprites_path, img)) for img in os.listdir(move_right_sprites_path)]
+        self.up_sprites = [pygame.image.load(os.path.join(move_up_sprites_path, img)) for img in os.listdir(move_up_sprites_path)]
+        self.down_sprites = [pygame.image.load(os.path.join(move_down_sprites_path, img)) for img in os.listdir(move_down_sprites_path)]
 
-        self.left_walking_sprites = [pygame.image.load("Assets/Sprites/mc_left_leftstep.png"),
-                                     self.stationary_sprite_left,
-                                     pygame.image.load("Assets/Sprites/mc_left_rightstep.png")]
-        self.right_walking_sprites = [pygame.image.load("Assets/Sprites/mc_right_leftstep.png"),
-                                      self.stationary_sprite_right,
-                                      pygame.image.load("Assets/Sprites/mc_right_rightstep.png")]
-
+        self.image = self.right_sprites[1]
         self.rect = self.image.get_rect()
-        self.image = self.stationary_sprite_right
+        self.height = height
+        self.width = width
 
         self.speed = 5
         self.faces_right = True
@@ -28,18 +28,9 @@ class Player(pygame.sprite.Sprite):
         self.counter = 0
         self.last_direction = 'right'
 
-        #pygame.draw.rect(self.image, colour, [0, 0, width, height])
-
-
-    def change_size(self, width, height):
-        self.width = width
-        self.height = height
-        self.image = pygame.Surface([width, height])
-        self.image.fill(WHITE)
-        self.image.set_colorkey(WHITE)
-
     def shoot(self):
-        if not self.can_shoot: return None
+        if not self.can_shoot:
+            return None
         else:
             bullet = Bullet(64, 64)
             if(self.last_direction == 'right'):
@@ -65,7 +56,7 @@ class Player(pygame.sprite.Sprite):
         if self.rect.x != (borders[0] - self.width) and self.rect.x < (borders[0] - self.width):
             self.rect.x += self.speed
 
-            self.image = self.right_walking_sprites[(self.counter // 10) % len(self.right_walking_sprites)]
+            self.image = self.right_sprites[(self.counter // 10) % len(self.right_sprites)]
             self.counter += 1
             self.faces_right = True
 
@@ -74,7 +65,7 @@ class Player(pygame.sprite.Sprite):
         if self.rect.x != 0 and self.rect.x > 0:
             self.rect.x -= self.speed
 
-            self.image = self.left_walking_sprites[(self.counter // 10) % len(self.left_walking_sprites)]
+            self.image = self.left_sprites[(self.counter // 10) % len(self.left_sprites)]
             self.counter += 1
             self.faces_right = False
 
@@ -82,18 +73,14 @@ class Player(pygame.sprite.Sprite):
         self.last_direction = 'up'
         if self.rect.y != borders[2] and self.rect.y > borders[2]:
             self.rect.y -= self.speed
-            if self.faces_right:
-                self.image = self.right_walking_sprites[(self.counter // 10) % len(self.right_walking_sprites)]
-            else:
-                self.image = self.left_walking_sprites[(self.counter // 10) % len(self.left_walking_sprites)]
+
+            self.image = self.up_sprites[(self.counter // 10) % len(self.up_sprites)]
             self.counter += 1
 
     def moveDown(self, borders):
         self.last_direction = 'down'
         if self.rect.y != (borders[1] - self.height) and self.rect.y < (borders[1] - self.height):
             self.rect.y += self.speed
-            if self.faces_right:
-                self.image = self.right_walking_sprites[(self.counter // 10) % len(self.right_walking_sprites)]
-            else:
-                self.image = self.left_walking_sprites[(self.counter // 10) % len(self.left_walking_sprites)]
+
+            self.image = self.down_sprites[(self.counter // 10) % len(self.down_sprites)]
             self.counter += 1
