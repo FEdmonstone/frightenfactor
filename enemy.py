@@ -1,17 +1,17 @@
 import pygame
 WHITE = (255, 255, 255)
 
-class Player(pygame.sprite.Sprite):
+class Enemy(pygame.sprite.Sprite):
     def __init__(self, colour, width, height):
         super().__init__()
 
         self.change_size(width, height)
 
-        self.max_speed = 5
+        self.max_speed = 2
 
         #pygame.draw.rect(self.image, colour, [0, 0, width, height])
-        
-        self.image = pygame.image.load(".temp_images/player.png").convert_alpha()
+
+        self.image = pygame.image.load(".temp_images/enemy.png").convert_alpha()
 
         self.rect = self.image.get_rect()
 
@@ -22,14 +22,8 @@ class Player(pygame.sprite.Sprite):
         self.image.fill(WHITE)
         self.image.set_colorkey(WHITE)
 
-    def moveRight(self):
-        self.rect.x += self.max_speed
+    def update(self):
+        self.move()
 
-    def moveLeft(self):
+    def move(self):
         self.rect.x -= self.max_speed
-
-    def moveUp(self):
-        self.rect.y -= self.max_speed
-
-    def moveDown(self):
-        self.rect.y += self.max_speed
