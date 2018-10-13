@@ -174,10 +174,10 @@ def singleplayer_screen():
         if keys[keybindings['down']]:
             main_player.moveDown(borders)
 
-        # Fire event
         if keys[keybindings['fire']]:
             bullet = main_player.shoot()
             if bullet:
+                bullet.direction = main_player.last_direction
                 bullet_sprites_list.add(bullet)
 
         counting_time = pygame.time.get_ticks() - start_time
