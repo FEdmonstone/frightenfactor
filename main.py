@@ -54,6 +54,7 @@ debug_font = pygame.font.SysFont("Courier", 12)
 player_sprites_list = pygame.sprite.Group()
 enemy_sprites_list = pygame.sprite.Group()
 bullet_sprites_list = pygame.sprite.Group()
+health_sprites_list = pygame.sprite.Group()
 
 background = pygame.image.load("Assets/Backgrounds/background.png").convert_alpha()
 
