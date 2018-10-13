@@ -4,6 +4,7 @@ from event_types import *
 from player import Player
 from enemy import Enemy
 from bullet import Bullet
+from health import Health
 
 # Game initialisation begins
 
@@ -28,7 +29,7 @@ HEIGHT = 720
 
 size = (WIDTH, HEIGHT)
 screen = pygame.display.set_mode(size)
-pygame.display.set_caption("Frighten Factory")
+pygame.display.set_caption("Frighten Factor")
 
 game_loop = True
 
@@ -55,6 +56,18 @@ enemy_sprites_list = pygame.sprite.Group()
 bullet_sprites_list = pygame.sprite.Group()
 
 background = pygame.image.load("Assets/Backgrounds/background.png").convert_alpha()
+
+num_health = 3
+hearts = []
+for count in range(num_health):
+    hearts.append("heart" + str(count + 1))
+position_index = 0
+for elem in hearts:
+    elem = Health(WHITE, 20, 20)
+    health_sprites_list.add(elem)
+    elem.rect.x = position_index * 64
+    elem.rect.y = 0
+    position_index += 1
 
 main_player = Player(RED, 64, 64)
 player_sprites_list.add(main_player)
@@ -125,6 +138,7 @@ while game_loop:
     player_sprites_list.update()
     enemy_sprites_list.update()
     bullet_sprites_list.update()
+    health_sprites_list.update()
 
     # Drawing logic
 
@@ -138,6 +152,7 @@ while game_loop:
     player_sprites_list.draw(screen)
     enemy_sprites_list.draw(screen)
     bullet_sprites_list.draw(screen)
+    health_sprites_list.draw(screen)
 
     # Screen update
     pygame.display.flip()
