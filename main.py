@@ -432,7 +432,7 @@ def multiplayer_screen():
         counting_time = pygame.time.get_ticks() - start_time
 
         # change milliseconds into minutes, seconds, milliseconds
-        counting_minutes = 5 - (counting_time / 60000)
+        counting_minutes = 3 - (counting_time / 60000)
         counting_seconds = int(60 - (counting_time % 60000) / 1000)
 
         counting_string = "%d:%d" % (counting_minutes, counting_seconds)
@@ -455,6 +455,14 @@ def multiplayer_screen():
             dead_sprites_list.add(enemy[0])
             enemy[0].dead = True
             enemy_sprites_list.remove(enemy[0])
+            
+        for enemy in pygame.sprite.groupcollide(bullet_sprites_list, player2_sprites_list, 1, 0):
+            if not invincible:
+                current = hearts2[-1]
+                current.kill()
+                del hearts2[-1]
+                invincible = True
+                pygame.time.set_timer(INVINCIBILITY_END, INVINCIBILITY_DURATION)
         if not hearts2:
             global current_state
             current_state = screen_states['mainmenu']
