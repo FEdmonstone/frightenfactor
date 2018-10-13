@@ -22,7 +22,7 @@ RED   = (255, 0,   0)
 INVINCIBILITY_DURATION = 1500
 invincible = False      # After-hit invincibility state
 running = True
-font = pygame.font.SysFont(None, 32)
+timer_font = pygame.font.SysFont('Courier', 32)
 start_time = pygame.time.get_ticks()
 
 # Event definitions
@@ -166,13 +166,12 @@ while game_loop:
 
     counting_string = "%d:%d" % (counting_minutes, counting_seconds)
 
-    counting_text = font.render(str(counting_string), 1, (255, 255, 255))
-    counting_rect = counting_text.get_rect(midtop=screen.get_rect().midtop)
+    #counting_rect = counting_text.get_rect(midtop=screen.get_rect().midtop)
 
-    screen.blit(counting_text, counting_rect)
     if int(counting_minutes) == 4 and counting_seconds == 0:
         game_loop = False
-    pygame.display.update()
+    #screen.blit(counting_text, counting_rect)
+    #pygame.display.update()
 
 
     # Game logic
@@ -187,7 +186,7 @@ while game_loop:
             del hearts[-1]
             invincible = True
             pygame.time.set_timer(INVINCIBILITY_END, INVINCIBILITY_DURATION)
-            
+
     if not hearts:
         pygame.sprite.groupcollide(player_sprites_list, enemy_sprites_list, 1, 0)
 
@@ -215,6 +214,10 @@ while game_loop:
     fps_str = "".join(["FPS: ", str(int(clock.get_fps()))])
     fps = debug_font.render(fps_str, True, WHITE)
     screen.blit(fps, (50, 50))
+
+    # Timer counter
+    counting_text = timer_font.render(str(counting_string), True, WHITE)
+    screen.blit(counting_text, (WIDTH / 2, 10))
 
     player_sprites_list.draw(screen)
     enemy_sprites_list.draw(screen)
