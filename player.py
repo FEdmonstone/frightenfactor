@@ -35,18 +35,18 @@ class Player(pygame.sprite.Sprite):
             return bullet
 
 
-    def moveRight(self):
-        if self.rect.x !=1270:
+    def moveRight(self, borders):
+        if self.rect.x != (borders[0] - self.width) and self.rect.x < (borders[0] - self.width):
             self.rect.x += self.speed
 
-    def moveLeft(self):
-        if self.rect.x != 0:
+    def moveLeft(self, borders):
+        if self.rect.x != 0 and self.rect.x > 0:
             self.rect.x -= self.speed
 
-    def moveUp(self):
-        if self.rect.y !=0:
+    def moveUp(self, borders):
+        if self.rect.y != borders[2] and self.rect.y > borders[2]:
          self.rect.y -= self.speed
 
-    def moveDown(self):
-        if self.rect.y !=710:
+    def moveDown(self, borders):
+        if self.rect.y != (borders[1] - self.height) and self.rect.y < (borders[1] - self.height):
          self.rect.y += self.speed

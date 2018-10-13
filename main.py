@@ -60,7 +60,13 @@ enemy_sprites_list = pygame.sprite.Group()
 bullet_sprites_list = pygame.sprite.Group()
 health_sprites_list = pygame.sprite.Group()
 
+borders = list(pygame.image.load("Assets/Backgrounds/background.png").get_rect().size)
+horizon = list(pygame.image.load("Assets/Backgrounds/horizon.png").get_rect().size)
+borders.append(horizon[1])
+
 background = pygame.image.load("Assets/Backgrounds/background.png").convert_alpha()
+background_horizon = pygame.image.load("Assets/Backgrounds/horizon.png").convert_alpha()
+
 
 num_health = 3
 hearts = []
@@ -86,7 +92,15 @@ enemy_sprites_list.add(temp_enemy2)
 temp_enemy2.rect.x = WIDTH - (temp_enemy2.width + 20)
 temp_enemy2.rect.y = HEIGHT / 3
 
+<<<<<<< Updated upstream
 # Game initialisation ends
+=======
+
+
+# Event timers
+pygame.time.set_timer(PLAYERS_CAN_SHOOT, PLAYER_SHOOTING_INTERVAL)
+pygame.time.set_timer(ENEMY_SPAWN, ENEMY_SPAWN_INTERVAL)
+>>>>>>> Stashed changes
 
 
 # Generate time-based events
@@ -126,13 +140,13 @@ while game_loop:
     keys = pygame.key.get_pressed()
     # Movement event
     if keys[keybindings['left']]:
-        main_player.moveLeft()
+        main_player.moveLeft(borders)
     if keys[keybindings['right']]:
-        main_player.moveRight()
+        main_player.moveRight(borders)
     if keys[keybindings['up']]:
-        main_player.moveUp()
+        main_player.moveUp(borders)
     if keys[keybindings['down']]:
-        main_player.moveDown()
+        main_player.moveDown(borders)
 
     # Fire event
     if keys[keybindings['fire']]:
@@ -166,6 +180,7 @@ while game_loop:
     # Drawing logic
 
     screen.blit(background, (0, 0))
+    screen.blit(background_horizon, (0,0))
 
     # FPS counter
     fps_str = "".join(["FPS: ", str(int(clock.get_fps()))])
