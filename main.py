@@ -49,11 +49,16 @@ pygame.key.set_repeat(1, 1)
 # Keybindings
 
 keybindings = {
-    'left'  : pygame.K_LEFT,
-    'right' : pygame.K_RIGHT,
-    'up'    : pygame.K_UP,
-    'down'  : pygame.K_DOWN,
-    'fire'  : pygame.K_SPACE
+    'left': pygame.K_LEFT,
+    'right': pygame.K_RIGHT,
+    'up': pygame.K_UP,
+    'down': pygame.K_DOWN,
+    'fire': pygame.K_SPACE,
+    'left2': pygame.K_a,
+    'right2': pygame.K_d,
+    'up2': pygame.K_w,
+    'down2': pygame.K_s,
+    'acidspit' : pygame.K_RETURN
 }
 
 # Font setup
@@ -260,14 +265,211 @@ def singleplayer_screen():
         # Timer updates
         generate_time_based_events()
 
-    def multiplayer_screen():
-        pass
+def multiplayer_screen():
+    player_sprites_list = pygame.sprite.Group()
+    player2_sprites_list = pygame.sprite.Group()
+    enemy_sprites_list = pygame.sprite.Group()
+    bullet_sprites_list = pygame.sprite.Group()
+    health_sprites_list = pygame.sprite.Group()
 
-    def options_screen():
-        pass
+    num_health = 3
+    num_health2 = 7
+    hearts = []
+    hearts2 = []
 
-    def help_screen():
-        pass
+    for count in range(num_health):
+        elem = Health(WHITE, 20, 20)
+        health_sprites_list.add(elem)
+        elem.rect.x = count * 64
+        elem.rect.y = 0
+        hearts.append(elem)
+        hearts2.append(elem)
+
+    main_player = Player(RED, 64, 64)
+    player2 = Player(RED, 80, 80)
+
+    player_sprites_list.add(main_player)
+    player2_sprites_list.add(player2)
+
+    main_player.rect.x = 20
+    main_player.rect.y = HEIGHT / 2
+
+    player2.rect.x = 20
+    player2.rect.y = HEIGHT / 2
+
+    invincible = False  # After-hit invincibility state
+    running = True
+    start_time = pygame.time.get_ticks()
+
+    horizon = list(pygame.image.load("Assets/Backgrounds/horizon.png").get_rect().size)
+    borders = [WIDTH, HEIGHT, horizon[1]]
+    bck_image_width = horizon[0]
+
+    background = pygame.image.load("Assets/Backgrounds/background.png").convert_alpha()
+    background_horizon = pygame.image.load("Assets/Backgrounds/horizon.png").convert_alpha()
+
+    offset = 0
+    offset2 = -bck_image_width
+
+    game_loop = True
+    while game_loop:
+
+        # Main event loop
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                game_loop = False
+            elif event.type == INVINCIBILITY_END:
+                invincible = False
+                pygame.time.set_timer(INVINCIBILITY_END, 0)
+
+            elif event.type == pygame.USEREVENT:
+                if event.dict["subtype"] == PLAYERS_CAN_SHOOT:
+                    for player in player_sprites_list:
+                        player.can_shoot = True
+
+                elif event.dict["subtype"] == BASIC_ZOMBIE_SPAWN:
+                    new_enemy = BasicZombie(64, 64)
+                    new_enemy.rect.x = WIDTH - 64
+                    new_enemy.rect.y = random.randint(64, borders[1] - 64)
+                    enemy_sprites_list.add(new_enemy)
+
+                elif event.dict["subtype"] == FLYING_ZOMBIE_SPAWN:
+                    new_enemy = FlyingZombie(64, 64)
+                    new_enemy.rect.x = WIDTH - 64
+                    new_enemy.rect.y = random.randint(0, borders[2] - 64)
+                    enemy_sprites_list.add(new_enemy)
+
+        keys = pygame.key.get_pressed()
+        # Movement event
+        if keys[keybindings['left']]:
+            main_player.moveLeft()
+        if keys[keybindings['right']]:
+            main_player.moveRight(borders)
+        if keys[keybindings['up']]:
+            main_player.moveUp(borders)
+        if keys[keybindings['down']]:
+            main_player.moveDown(borders)
+
+        if keys[keybindings['left2']]:
+            player2.moveLeft()
+        if keys[keybindings['right2']]:
+            player2.moveRight(borders)
+        if keys[keybindings['up2']]:
+            player2.moveUp(borders)
+        if keys[keybindings['down2']]:
+            player2.moveDown(borders)
+
+        # Fire event
+        if keys[keybindings['fire']]:
+            bullet = main_player.shoot()
+            if bullet:
+                bullet_sprites_list.add(bullet)
+
+        if keys[keybindings['acidspit']]:
+            spit = player2.shoot()
+            if spit:
+                bullet_sprites_list.add(spit)
+
+        counting_time = pygame.time.get_ticks() - start_time
+
+        # change milliseconds into minutes, seconds, milliseconds
+        counting_minutes = 5 - (counting_time / 60000)
+        counting_seconds = int(60 - (counting_time % 60000) / 1000)
+
+        counting_string = "%d:%d" % (counting_minutes, counting_seconds)
+
+        # counting_rect = counting_text.get_rect(midtop=screen.get_rect().midtop)
+        counting_text = debug_font.render(str(counting_string), 1, (255, 255, 255))
+        counting_rect = counting_text.get_rect(midtop=screen.get_rect().midtop)
+
+        screen.blit(counting_text, counting_rect)
+        if int(counting_minutes) == 0 and counting_seconds == 0:
+            game_loop = False
+        # screen.blit(counting_text, counting_rect)
+        # pygame.display.update()
+
+        # Game logic
+        # Kills enemy when they collide with player
+        for enemy in pygame.sprite.groupcollide(bullet_sprites_list, enemy_sprites_list, 1, 1):
+            pass
+
+        for player in pygame.sprite.groupcollide(player_sprites_list, enemy_sprites_list, 0, 0):
+            if not invincible:
+                current = hearts[-1]
+                current.kill()
+                del hearts[-1]
+                invincible = True
+                pygame.time.set_timer(INVINCIBILITY_END, INVINCIBILITY_DURATION)
+
+        for player in pygame.sprite.groupcollide(player_sprites_list, player2_sprites_list, 0, 0):
+            if not invincible:
+                current = hearts[-1]
+                current.kill()
+                del hearts[-1]
+                invincible = True
+                pygame.time.set_timer(INVINCIBILITY_END, INVINCIBILITY_DURATION)
+
+        for player in pygame.sprite.groupcollide(player2_sprites_list, player_sprites_list, 0, 0):
+            if not invincible:
+                current = hearts[-1]
+                current.kill()
+                del hearts[-1]
+                invincible = True
+                pygame.time.set_timer(INVINCIBILITY_END, INVINCIBILITY_DURATION)
+
+        if not hearts:
+            pygame.sprite.groupcollide(player_sprites_list, enemy_sprites_list, 1, 0)
+
+        if not hearts2:
+            pygame.sprite.groupcollide(player2_sprites_list, player_sprites_list, 1, 0)
+
+        player_sprites_list.update()
+        player2_sprites_list.update()
+        enemy_sprites_list.update()
+        bullet_sprites_list.update()
+        health_sprites_list.update()
+
+        # Drawing logic
+        offset += 1
+        offset2 += 1
+        screen.blit(background, (-offset, 0))
+        screen.blit(background_horizon, (-offset, 0))
+
+        screen.blit(background, (-offset2, 0))
+        screen.blit(background_horizon, (-offset2, 0))
+
+        if offset > bck_image_width:
+            offset = -bck_image_width
+        if offset2 > bck_image_width:
+            offset2 = -bck_image_width
+
+        # FPS counter
+        fps_str = "".join(["FPS: ", str(int(clock.get_fps()))])
+        fps = debug_font.render(fps_str, True, WHITE)
+        screen.blit(fps, (50, 50))
+
+        # Timer counter
+        counting_text = timer_font.render(str(counting_string), True, WHITE)
+        screen.blit(counting_text, (WIDTH / 2, 10))
+
+        player_sprites_list.draw(screen)
+        player2_sprites_list.draw(screen)
+        enemy_sprites_list.draw(screen)
+        bullet_sprites_list.draw(screen)
+        health_sprites_list.draw(screen)
+
+        # Screen update
+        pygame.display.flip()
+        clock.tick(60)
+
+        # Timer updates
+        generate_time_based_events()
+
+def options_screen():
+    pass
+
+def help_screen():
+    pass
 
 screen_states = {
     'mainmenu' : 0,
