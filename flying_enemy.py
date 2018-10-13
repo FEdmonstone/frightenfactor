@@ -1,7 +1,7 @@
 import pygame
 WHITE = (255, 255, 255)
 
-class Enemy(pygame.sprite.Sprite):
+class FlyingEnemy(pygame.sprite.Sprite):
     def __init__(self, colour, width, height):
         super().__init__()
 

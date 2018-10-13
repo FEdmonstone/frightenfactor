@@ -138,7 +138,7 @@ while game_loop:
             elif event.dict["subtype"] == ENEMY_SPAWN:
                 new_enemy = Enemy(BLUE, 64, 64)
                 new_enemy.rect.x = WIDTH - 64
-                new_enemy.rect.y = random.randint(64, borders[1]-64)
+                new_enemy.rect.y = random.randint(borders[2], borders[1]-64)
                 enemy_sprites_list.add(new_enemy)
 
     keys = pygame.key.get_pressed()
@@ -156,6 +156,7 @@ while game_loop:
     if keys[keybindings['fire']]:
         bullet = main_player.shoot()
         if bullet:
+            bullet.direction = main_player.last_direction
             bullet_sprites_list.add(bullet)
 
     counting_time = pygame.time.get_ticks() - start_time
@@ -170,7 +171,7 @@ while game_loop:
     counting_rect = counting_text.get_rect(midtop=screen.get_rect().midtop)
 
     screen.blit(counting_text, counting_rect)
-    if int(counting_minutes) == 4 and counting_seconds == 0:
+    if int(counting_minutes) == 0 and counting_seconds == 0:
         game_loop = False
     pygame.display.update()
 

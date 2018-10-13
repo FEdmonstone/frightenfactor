@@ -26,6 +26,7 @@ class Player(pygame.sprite.Sprite):
         self.can_shoot = True
 
         self.counter = 0
+        self.last_direction = 'right'
 
         #pygame.draw.rect(self.image, colour, [0, 0, width, height])
 
@@ -41,14 +42,26 @@ class Player(pygame.sprite.Sprite):
         if not self.can_shoot: return None
         else:
             bullet = Bullet(64, 64)
-            bullet.rect.x = self.rect.x + 45
-            bullet.rect.y = self.rect.y + 35
+            if(self.last_direction == 'right'):
+                bullet.rect.x = self.rect.x + 45
+                bullet.rect.y = self.rect.y + 35
+            elif(self.last_direction == 'left'):
+                bullet.rect.y = self.rect.y + 35
+                bullet.rect.x = self.rect.x + 10
+            elif(self.last_direction == 'up'):
+                bullet.rect.x = self.rect.x + 28
+                bullet.rect.y = self.rect.y
+            elif(self.last_direction == 'down'):
+                bullet.rect.x = self.rect.x + 28
+                bullet.rect.y = self.rect.y + 50
+
 
             self.can_shoot = False
 
             return bullet
 
     def moveRight(self, borders):
+        self.last_direction = 'right'
         if self.rect.x != (borders[0] - self.width) and self.rect.x < (borders[0] - self.width):
             self.rect.x += self.speed
 
@@ -57,6 +70,7 @@ class Player(pygame.sprite.Sprite):
             self.faces_right = True
 
     def moveLeft(self):
+        self.last_direction = 'left'
         if self.rect.x != 0 and self.rect.x > 0:
             self.rect.x -= self.speed
 
@@ -65,6 +79,7 @@ class Player(pygame.sprite.Sprite):
             self.faces_right = False
 
     def moveUp(self, borders):
+        self.last_direction = 'up'
         if self.rect.y != borders[2] and self.rect.y > borders[2]:
             self.rect.y -= self.speed
             if self.faces_right:
@@ -74,6 +89,7 @@ class Player(pygame.sprite.Sprite):
             self.counter += 1
 
     def moveDown(self, borders):
+        self.last_direction = 'down'
         if self.rect.y != (borders[1] - self.height) and self.rect.y < (borders[1] - self.height):
             self.rect.y += self.speed
             if self.faces_right:

@@ -8,6 +8,7 @@ class Bullet(pygame.sprite.Sprite):
         self.change_size(width, height)
 
         self.speed = 10
+        self.direction = 'right'
 
         self.image = pygame.image.load("Assets/Sprites/bullet.png").convert_alpha()
 
@@ -24,7 +25,14 @@ class Bullet(pygame.sprite.Sprite):
         self.move()
 
     def move(self):
-        self.rect.x += self.speed
+        if(self.direction == 'right'):
+            self.rect.x += self.speed
+        if(self.direction == 'left'):
+            self.rect.x -= self.speed
+        if(self.direction == 'up'):
+            self.rect.y -= self.speed
+        if(self.direction == 'down'):
+            self.rect.y += self.speed
 
     def change_speed(self, speed):
         self.speed = speed
