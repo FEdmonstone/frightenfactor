@@ -60,12 +60,12 @@ enemy_sprites_list = pygame.sprite.Group()
 bullet_sprites_list = pygame.sprite.Group()
 health_sprites_list = pygame.sprite.Group()
 
-borders = list(pygame.image.load("Assets/Backgrounds/background.png").get_rect().size)
 horizon = list(pygame.image.load("Assets/Backgrounds/horizon.png").get_rect().size)
-borders.append(horizon[1])
+borders = [WIDTH, HEIGHT, horizon[1]]
 
 background = pygame.image.load("Assets/Backgrounds/background.png").convert_alpha()
 background_horizon = pygame.image.load("Assets/Backgrounds/horizon.png").convert_alpha()
+offset = 0
 
 
 num_health = 3
@@ -170,9 +170,9 @@ while game_loop:
     health_sprites_list.update()
 
     # Drawing logic
-
-    screen.blit(background, (0, 0))
-    screen.blit(background_horizon, (0,0))
+    offset -=2
+    screen.blit(background, (offset, 0))
+    screen.blit(background_horizon, (offset,0))
 
     # FPS counter
     fps_str = "".join(["FPS: ", str(int(clock.get_fps()))])
