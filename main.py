@@ -1,5 +1,6 @@
 import pygame
 import random
+from event_types import *
 from player import Player
 from enemy import Enemy
 from bullet import Bullet
@@ -15,6 +16,9 @@ WHITE = (255, 255, 255)
 BLUE  = (0,   0,   255)
 GREEN = (0,   255, 0)
 RED   = (255, 0,   0)
+
+# Game settings
+PLAYER_SHOOTING_INTERVAL_MS = 400
 
 # Window settings
 
@@ -66,6 +70,9 @@ enemy_sprites_list.add(temp_enemy2)
 temp_enemy2.rect.x = WIDTH - (temp_enemy2.width + 20)
 temp_enemy2.rect.y = HEIGHT / 3
 
+# Event timers
+pygame.time.set_timer(PLAYERS_CAN_SHOOT, PLAYER_SHOOTING_INTERVAL_MS)
+
 
 # Game initialisation ends
 
@@ -76,6 +83,10 @@ while game_loop:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             game_loop = False
+
+        if event.type == PLAYERS_CAN_SHOOT:
+            for player in player_sprites_list:
+                player.can_shoot = True
 
         keys = pygame.key.get_pressed()
         # Movement event
@@ -91,7 +102,8 @@ while game_loop:
         # Fire event
         if keys[keybindings['fire']]:
             bullet = main_player.shoot()
-            bullet_sprites_list.add(bullet)
+            if bullet:
+                bullet_sprites_list.add(bullet)
 
 
     # Game logic
