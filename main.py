@@ -62,10 +62,12 @@ health_sprites_list = pygame.sprite.Group()
 
 horizon = list(pygame.image.load("Assets/Backgrounds/horizon.png").get_rect().size)
 borders = [WIDTH, HEIGHT, horizon[1]]
+bck_image_width = horizon[0]
 
 background = pygame.image.load("Assets/Backgrounds/background.png").convert_alpha()
 background_horizon = pygame.image.load("Assets/Backgrounds/horizon.png").convert_alpha()
 offset = 0
+offset2 = -bck_image_width
 
 
 num_health = 3
@@ -125,7 +127,7 @@ while game_loop:
             elif event.dict["subtype"] == ENEMY_SPAWN:
                 new_enemy = Enemy(BLUE, 64, 64)
                 new_enemy.rect.x = WIDTH - 64
-                new_enemy.rect.y = random.randint(64, HEIGHT-64)
+                new_enemy.rect.y = random.randint(64, borders[1]-64)
                 enemy_sprites_list.add(new_enemy)
 
 
@@ -170,9 +172,19 @@ while game_loop:
     health_sprites_list.update()
 
     # Drawing logic
-    offset -=2
-    screen.blit(background, (offset, 0))
-    screen.blit(background_horizon, (offset,0))
+    offset +=1
+    offset2 += 1
+    screen.blit(background, (-offset, 0))
+    screen.blit(background_horizon, (-offset,0))
+
+    screen.blit(background, (-offset2, 0))
+    screen.blit(background_horizon, (-offset2,0))
+
+    if offset > bck_image_width:
+        offset = -bck_image_width
+    if offset2 > bck_image_width:
+        offset2 = -bck_image_width
+        
 
     # FPS counter
     fps_str = "".join(["FPS: ", str(int(clock.get_fps()))])
