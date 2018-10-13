@@ -5,6 +5,7 @@ from player import Player
 from enemy import Enemy
 from bullet import Bullet
 from health import Health
+from basic_zombie import BasicZombie
 
 # Game initialisation begins
 
@@ -85,16 +86,6 @@ player_sprites_list.add(main_player)
 main_player.rect.x = 20
 main_player.rect.y = HEIGHT / 2
 
-temp_enemy1 = Enemy(BLUE, 64, 64)
-enemy_sprites_list.add(temp_enemy1)
-temp_enemy1.rect.x = WIDTH - (temp_enemy1.width + 20)
-temp_enemy1.rect.y = HEIGHT / 3 * 2
-
-temp_enemy2 = Enemy(BLUE, 64, 64)
-enemy_sprites_list.add(temp_enemy2)
-temp_enemy2.rect.x = WIDTH - (temp_enemy2.width + 20)
-temp_enemy2.rect.y = HEIGHT / 3
-
 # Game initialisation ends
 
 
@@ -134,7 +125,7 @@ while game_loop:
                 for player in player_sprites_list:
                     player.can_shoot = True
             elif event.dict["subtype"] == ENEMY_SPAWN:
-                new_enemy = Enemy(BLUE, 64, 64)
+                new_enemy = BasicZombie(64, 64)
                 new_enemy.rect.x = WIDTH - 64
                 new_enemy.rect.y = random.randint(64, HEIGHT-64)
                 enemy_sprites_list.add(new_enemy)
