@@ -89,14 +89,21 @@ frozen = True
 
 def main_menu_screen():
 
-    def button(x,y,w,h):
+    def button(x,y,w,h,button_type):
         global frozen
         mouse = pygame.mouse.get_pos()
         click = pygame.mouse.get_pressed()
         if x+w > mouse[0] > x and y+h > mouse[1] > y:
             if click[0] == 1:
                 frozen = False
-                print("Test")
+                if button_type == 'singleplayer':
+                    print("Singleplayer")
+                elif button_type == 'multiplayer':
+                    print("Multiplayer")
+                elif button_type == 'help':
+                    print("Help")
+                elif button_type == 'quit':
+                    pygame.quit()
 
     #while frozen:
     #    for event in pygame.event.get():
@@ -112,7 +119,10 @@ def main_menu_screen():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 menu_loop = False
-            button(WIDTH / 2 - 128, HEIGHT / 2 - 32, 256, 64)
+            button(WIDTH / 2 - 128, HEIGHT / 2 - 32, 256, 64, 'singleplayer')
+            button(WIDTH / 2 - 128, HEIGHT / 2 + 64, 256, 64, 'multiplayer')
+            button(WIDTH / 2 - 128, HEIGHT / 2 + 160, 256, 64, 'help')
+            button(WIDTH / 2 - 128, HEIGHT / 2 + 256, 256, 64, 'quit')
 
         screen.blit(main_menu.background, (0, 0))
         main_menu.button_sprites_list.update()
@@ -292,12 +302,12 @@ def singleplayer_screen():
         counting_text = timer_font.render(str(counting_string), True, WHITE)
         screen.blit(counting_text, (WIDTH / 2, 10))
 
+        dead_sprites_list.draw(screen)
         player_sprites_list.draw(screen)
         enemy_sprites_list.draw(screen)
         bullet_sprites_list.draw(screen)
         health_sprites_list.draw(screen)
         spit_sprites.draw(screen)
-        dead_sprites_list.draw(screen)
 
         # Screen update
         pygame.display.flip()
@@ -520,7 +530,7 @@ screen_states = {
     'help' : 4
 }
 
-current_state = screen_states['mainmenu']
+current_state = screen_states['singleplayer']
 while main_loop:
     print(current_state)
     if current_state == screen_states['mainmenu']:
