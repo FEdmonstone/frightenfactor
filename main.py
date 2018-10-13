@@ -19,10 +19,12 @@ GREEN = (0,   255, 0)
 RED   = (255, 0,   0)
 
 # Game settings (intervals in milliseconds)
-PLAYER_SHOOTING_INTERVAL = 400
-ENEMY_SPAWN_INTERVAL = 1000
 INVINCIBILITY_DURATION = 1500
 invincible = False
+
+# Event definitions
+events = {PLAYERS_CAN_SHOOT: {"interval": 400, "count": 0},
+          ENEMY_SPAWN: {"interval": 1000, "count": 0}}
 
 # Window settings
 
@@ -84,32 +86,42 @@ enemy_sprites_list.add(temp_enemy2)
 temp_enemy2.rect.x = WIDTH - (temp_enemy2.width + 20)
 temp_enemy2.rect.y = HEIGHT / 3
 
-# Event timers
-pygame.time.set_timer(PLAYERS_CAN_SHOOT, PLAYER_SHOOTING_INTERVAL)
-pygame.time.set_timer(ENEMY_SPAWN, ENEMY_SPAWN_INTERVAL)
-
-
 # Game initialisation ends
+
+
+# Generate time-based events
+def generate_time_based_events():
+    ms_elapsed = pygame.time.get_ticks()
+
+    # Check whether we should trigger any of the events
+    for event_type, event_props in events.items():
+        if ms_elapsed / event_props["interval"] > event_props["count"]:
+            new_event = pygame.event.Event(pygame.USEREVENT, {"subtype": event_type})
+            pygame.event.post(new_event)
+            event_props["count"] += 1
+
 
 # Main game loop
 while game_loop:
 
     # Main event loop
     for event in pygame.event.get():
-        print(event.type)
         if event.type == pygame.QUIT:
             game_loop = False
-        elif event.type == PLAYERS_CAN_SHOOT:
-            for player in player_sprites_list:
-                player.can_shoot = True
-        elif event.type == ENEMY_SPAWN:
-            new_enemy = Enemy(BLUE, 64, 64)
-            new_enemy.rect.x = WIDTH - 64
-            new_enemy.rect.y = random.randint(64, HEIGHT-64)
-            enemy_sprites_list.add(new_enemy)
         elif event.type == INVINCIBILITY_END:
             invincible = False
             pygame.time.set_timer(INVINCIBILITY_END, 0)
+
+        elif event.type == pygame.USEREVENT:
+            if event.dict["subtype"] == PLAYERS_CAN_SHOOT:
+                for player in player_sprites_list:
+                    player.can_shoot = True
+            elif event.dict["subtype"] == ENEMY_SPAWN:
+                new_enemy = Enemy(BLUE, 64, 64)
+                new_enemy.rect.x = WIDTH - 64
+                new_enemy.rect.y = random.randint(64, HEIGHT-64)
+                enemy_sprites_list.add(new_enemy)
+
 
     keys = pygame.key.get_pressed()
     # Movement event
@@ -168,5 +180,8 @@ while game_loop:
     # Screen update
     pygame.display.flip()
     clock.tick(60)
+
+    # Timer updates
+    generate_time_based_events()
 
 pygame.quit()
