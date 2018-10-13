@@ -5,7 +5,7 @@ class Main_menu(pygame.sprite.Sprite):
     def __init__(self, width, height):
         super().__init__()
 
-        self.background = pygame.image.load("Assets/Backgrounds/background.png").convert_alpha()
+        self.background = pygame.image.load("Assets/Backgrounds/menubg.png").convert_alpha()
         self.WIDTH = width
         self.HEIGHT = height
 

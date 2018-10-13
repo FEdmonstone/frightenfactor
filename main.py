@@ -122,7 +122,7 @@ while menu_loop:
         if event.type == pygame.QUIT:
             pygame.quit()
 
-    screen.blit(background, (0, 0))
+    screen.blit(main_menu.background, (0, 0))
     main_menu.button_sprites_list.update()
     main_menu.button_sprites_list.draw(screen)
 
