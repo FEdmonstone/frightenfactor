@@ -122,7 +122,7 @@ def singleplayer_screen():
     borders = [WIDTH, HEIGHT, horizon[1]]
     bck_image_width = horizon[0]
 
-    background = pygame.image.load("Assets/Backgrounds/background.png").convert_alpha()
+    background = pygame.image.load("Assets/Backgrounds/Background.png").convert_alpha()
     background_horizon = pygame.image.load("Assets/Backgrounds/horizon.png").convert_alpha()
 
     offset = 0
