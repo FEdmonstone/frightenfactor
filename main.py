@@ -334,6 +334,12 @@ def multiplayer_screen():
         elem.rect.x = count * 64
         elem.rect.y = 0
         hearts.append(elem)
+
+    for count in range(num_health2):
+        elem = Health(WHITE, 20, 20)
+        health_sprites_list.add(elem)
+        elem.rect.x = 1280 - (count * 64)
+        elem.rect.y = 0
         hearts2.append(elem)
 
     main_player = Player(RED, 64, 64)
@@ -345,7 +351,7 @@ def multiplayer_screen():
     main_player.rect.x = 20
     main_player.rect.y = HEIGHT / 2
 
-    player2.rect.x = 20
+    player2.rect.x = 1280 - 20
     player2.rect.y = HEIGHT / 2
 
     invincible = False  # After-hit invincibility state
@@ -356,7 +362,7 @@ def multiplayer_screen():
     borders = [WIDTH, HEIGHT, horizon[1]]
     bck_image_width = horizon[0]
 
-    background = pygame.image.load("Assets/Backgrounds/background.png").convert_alpha()
+    background = pygame.image.load("Assets/Backgrounds/Background.png").convert_alpha()
     background_horizon = pygame.image.load("Assets/Backgrounds/horizonfull.png").convert_alpha()
 
     offset = 0
@@ -389,37 +395,31 @@ def multiplayer_screen():
                     new_enemy.rect.x = WIDTH - 64
                     new_enemy.rect.y = random.randint(0, borders[2] - 64)
                     enemy_sprites_list.add(new_enemy)
-
         keys = pygame.key.get_pressed()
         # Movement event
         if keys[keybindings['left']]:
-            main_player.moveLeft()
+            player2.moveLeft()
         if keys[keybindings['right']]:
-            main_player.moveRight(borders)
+            player2.moveRight(borders)
         if keys[keybindings['up']]:
-            main_player.moveUp(borders)
+            player2.moveUp(borders)
         if keys[keybindings['down']]:
-            main_player.moveDown(borders)
+            player2.moveDown(borders)
 
         if keys[keybindings['left2']]:
-            player2.moveLeft()
+            main_player.moveLeft()
         if keys[keybindings['right2']]:
-            player2.moveRight(borders)
+            main_player.moveRight(borders)
         if keys[keybindings['up2']]:
-            player2.moveUp(borders)
+            main_player.moveUp(borders)
         if keys[keybindings['down2']]:
-            player2.moveDown(borders)
+            main_player.moveDown(borders)
 
         # Fire event
         if keys[keybindings['fire']]:
             bullet = main_player.shoot()
             if bullet:
                 bullet_sprites_list.add(bullet)
-
-        if keys[keybindings['acidspit']]:
-            spit = player2.shoot()
-            if spit:
-                bullet_sprites_list.add(spit)
 
         counting_time = pygame.time.get_ticks() - start_time
 
@@ -441,8 +441,17 @@ def multiplayer_screen():
 
         # Game logic
         # Kills enemy when they collide with player
-        for enemy in pygame.sprite.groupcollide(bullet_sprites_list, enemy_sprites_list, 1, 1):
-            pass
+        for enemy in pygame.sprite.groupcollide(bullet_sprites_list, player2_sprites_list, 1, 0):
+            if not invincible:
+                current = hearts2[-1]
+                current.kill()
+                del hearts2[-1]
+                invincible = True
+                pygame.time.set_timer(INVINCIBILITY_END, INVINCIBILITY_DURATION)
+        if not hearts2:
+            global current_state
+            current_state = screen_states['mainmenu']
+            game_loop = False
 
         for player in pygame.sprite.groupcollide(player_sprites_list, enemy_sprites_list, 0, 0):
             if not invincible:
@@ -459,6 +468,10 @@ def multiplayer_screen():
                 del hearts[-1]
                 invincible = True
                 pygame.time.set_timer(INVINCIBILITY_END, INVINCIBILITY_DURATION)
+        if not hearts:
+            global current_state
+            current_state = screen_states['mainmenu']
+            game_loop = False
 
         for player in pygame.sprite.groupcollide(player2_sprites_list, player_sprites_list, 0, 0):
             if not invincible:
@@ -516,32 +529,40 @@ def multiplayer_screen():
         # Timer updates
         generate_time_based_events()
 
+
 def options_screen():
     pass
+
 
 def help_screen():
     pass
 
+
 screen_states = {
-    'mainmenu' : 0,
-    'singleplayer' : 1,
-    'multiplayer' : 2,
-    'options' : 3,
-    'help' : 4
+    'mainmenu': 0,
+    'singleplayer': 1,
+    'multiplayer': 2,
+    'options': 3,
+    'help': 4,
+    'quit': 9
 }
 
-current_state = screen_states['singleplayer']
+current_state = screen_states['mainmenu']
 while main_loop:
-    print(current_state)
     if current_state == screen_states['mainmenu']:
         main_menu_screen()
+        current_state = screen_states['multiplayer']
     elif current_state == screen_states['singleplayer']:
         singleplayer_screen()
+        main_loop = False
     elif current_state == screen_states['multiplayer']:
         multiplayer_screen()
     elif current_state == screen_states['options']:
         options_screen()
     elif current_state == screen_states['help']:
         help_screen()
+    elif current_state == screen_states['quit']:
+        main_loop = False
 
 pygame.quit()
+
