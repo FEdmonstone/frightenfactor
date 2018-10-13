@@ -36,13 +36,17 @@ class Player(pygame.sprite.Sprite):
 
 
     def moveRight(self):
-        self.rect.x += self.speed
+        if self.rect.x !=1270:
+            self.rect.x += self.speed
 
     def moveLeft(self):
-        self.rect.x -= self.speed
+        if self.rect.x != 0:
+            self.rect.x -= self.speed
 
     def moveUp(self):
-        self.rect.y -= self.speed
+        if self.rect.y !=0:
+         self.rect.y -= self.speed
 
     def moveDown(self):
-        self.rect.y += self.speed
+        if self.rect.y !=710:
+         self.rect.y += self.speed
