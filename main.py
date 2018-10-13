@@ -17,8 +17,9 @@ BLUE  = (0,   0,   255)
 GREEN = (0,   255, 0)
 RED   = (255, 0,   0)
 
-# Game settings
-PLAYER_SHOOTING_INTERVAL_MS = 400
+# Game settings (intervals in milliseconds)
+PLAYER_SHOOTING_INTERVAL = 400
+ENEMY_SPAWN_INTERVAL = 1000
 
 # Window settings
 
@@ -71,7 +72,8 @@ temp_enemy2.rect.x = WIDTH - (temp_enemy2.width + 20)
 temp_enemy2.rect.y = HEIGHT / 3
 
 # Event timers
-pygame.time.set_timer(PLAYERS_CAN_SHOOT, PLAYER_SHOOTING_INTERVAL_MS)
+pygame.time.set_timer(PLAYERS_CAN_SHOOT, PLAYER_SHOOTING_INTERVAL)
+pygame.time.set_timer(ENEMY_SPAWN, ENEMY_SPAWN_INTERVAL)
 
 
 # Game initialisation ends
@@ -81,29 +83,34 @@ while game_loop:
 
     # Main event loop
     for event in pygame.event.get():
+        print(event.type)
         if event.type == pygame.QUIT:
             game_loop = False
-
-        if event.type == PLAYERS_CAN_SHOOT:
+        elif event.type == PLAYERS_CAN_SHOOT:
             for player in player_sprites_list:
                 player.can_shoot = True
+        elif event.type == ENEMY_SPAWN:
+            new_enemy = Enemy(BLUE, 64, 64)
+            new_enemy.rect.x = WIDTH - 64
+            new_enemy.rect.y = random.randint(64, HEIGHT-64)
+            enemy_sprites_list.add(new_enemy)
 
-        keys = pygame.key.get_pressed()
-        # Movement event
-        if keys[keybindings['left']]:
-            main_player.moveLeft()
-        if keys[keybindings['right']]:
-            main_player.moveRight()
-        if keys[keybindings['up']]:
-            main_player.moveUp()
-        if keys[keybindings['down']]:
-            main_player.moveDown()
+    keys = pygame.key.get_pressed()
+    # Movement event
+    if keys[keybindings['left']]:
+        main_player.moveLeft()
+    if keys[keybindings['right']]:
+        main_player.moveRight()
+    if keys[keybindings['up']]:
+        main_player.moveUp()
+    if keys[keybindings['down']]:
+        main_player.moveDown()
 
-        # Fire event
-        if keys[keybindings['fire']]:
-            bullet = main_player.shoot()
-            if bullet:
-                bullet_sprites_list.add(bullet)
+    # Fire event
+    if keys[keybindings['fire']]:
+        bullet = main_player.shoot()
+        if bullet:
+            bullet_sprites_list.add(bullet)
 
 
     # Game logic
