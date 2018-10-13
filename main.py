@@ -21,6 +21,9 @@ RED   = (255, 0,   0)
 # Game settings (intervals in milliseconds)
 INVINCIBILITY_DURATION = 1500
 invincible = False      # After-hit invincibility state
+running = True
+font = pygame.font.SysFont(None, 32)
+start_time = pygame.time.get_ticks()
 
 # Event definitions
 events = {PLAYERS_CAN_SHOOT: {"interval": 400, "count": 0},
@@ -60,12 +63,12 @@ enemy_sprites_list = pygame.sprite.Group()
 bullet_sprites_list = pygame.sprite.Group()
 health_sprites_list = pygame.sprite.Group()
 
-borders = list(pygame.image.load("Assets/Backgrounds/background.png").get_rect().size)
 horizon = list(pygame.image.load("Assets/Backgrounds/horizon.png").get_rect().size)
-borders.append(horizon[1])
+borders = [WIDTH, HEIGHT, horizon[1]]
 
 background = pygame.image.load("Assets/Backgrounds/background.png").convert_alpha()
 background_horizon = pygame.image.load("Assets/Backgrounds/horizon.png").convert_alpha()
+offset = 0
 
 
 num_health = 3
@@ -153,6 +156,22 @@ while game_loop:
         if bullet:
             bullet_sprites_list.add(bullet)
 
+    counting_time = pygame.time.get_ticks() - start_time
+
+    # change milliseconds into minutes, seconds, milliseconds
+    counting_minutes = 5 - (counting_time / 60000)
+    counting_seconds = int(60 - (counting_time % 60000) / 1000)
+
+    counting_string = "%d:%d" % (counting_minutes, counting_seconds)
+
+    counting_text = font.render(str(counting_string), 1, (255, 255, 255))
+    counting_rect = counting_text.get_rect(midtop=screen.get_rect().midtop)
+
+    screen.blit(counting_text, counting_rect)
+    if int(counting_minutes) == 4 and counting_seconds == 0:
+        game_loop = False
+    pygame.display.update()
+
 
     # Game logic
     # Kills enemy when they collide with player
@@ -176,9 +195,9 @@ while game_loop:
     health_sprites_list.update()
 
     # Drawing logic
-
-    screen.blit(background, (0, 0))
-    screen.blit(background_horizon, (0,0))
+    offset -=2
+    screen.blit(background, (offset, 0))
+    screen.blit(background_horizon, (offset,0))
 
     # FPS counter
     fps_str = "".join(["FPS: ", str(int(clock.get_fps()))])
