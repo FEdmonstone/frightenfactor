@@ -12,10 +12,11 @@ class BasicZombie(Enemy):
         self.animation_counter = 0
         
         self.dead = False
+        self.dead_image = pygame.image.load("Assets/Sprites/blood.png")
 
     def move(self):
         if self.dead:
-            self.image = pygame.transform.scale(pygame.image.load("Assets/Sprites/blood.png"), (64, 64))
+            self.image = pygame.transform.scale(self.dead_image, (64,64))
         else:
             self.image = self.move_sprites[(self.animation_counter // 10) % len(self.move_sprites)]
             self.animation_counter += 1
