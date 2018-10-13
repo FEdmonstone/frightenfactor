@@ -144,7 +144,7 @@ while game_loop:
             pygame.time.set_timer(INVINCIBILITY_END, INVINCIBILITY_DURATION)
             
     if not hearts:
-    pygame.sprite.groupcollide(player_sprites_list, enemy_sprites_list, 1, 0)
+        pygame.sprite.groupcollide(player_sprites_list, enemy_sprites_list, 1, 0)
 
     player_sprites_list.update()
     enemy_sprites_list.update()
