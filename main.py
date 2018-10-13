@@ -20,7 +20,10 @@ RED   = (255, 0,   0)
 
 # Game settings (intervals in milliseconds)
 INVINCIBILITY_DURATION = 1500
-invincible = False
+invincible = False      # After-hit invincibility state
+running = True
+font = pygame.font.SysFont(None, 32)
+start_time = pygame.time.get_ticks()
 
 # Event definitions
 events = {PLAYERS_CAN_SHOOT: {"interval": 400, "count": 0},
@@ -96,6 +99,7 @@ temp_enemy2.rect.y = HEIGHT / 3
 
 # Game initialisation ends
 
+
 # Event timers
 # Generate time-based events
 def generate_time_based_events():
@@ -107,6 +111,13 @@ def generate_time_based_events():
             new_event = pygame.event.Event(pygame.USEREVENT, {"subtype": event_type})
             pygame.event.post(new_event)
             event_props["count"] += 1
+"""
+WIP
+
+# Add an event to a list, it will be performed every 'interval' amount of milliseconds
+def add_time_based_event(event_type, interval):
+    events[event_type] = {"interval": interval, "count": 0}
+"""
 
 
 # Main game loop
@@ -130,11 +141,10 @@ while game_loop:
                 new_enemy.rect.y = random.randint(64, borders[1]-64)
                 enemy_sprites_list.add(new_enemy)
 
-
     keys = pygame.key.get_pressed()
     # Movement event
     if keys[keybindings['left']]:
-        main_player.moveLeft(borders)
+        main_player.moveLeft()
     if keys[keybindings['right']]:
         main_player.moveRight(borders)
     if keys[keybindings['up']]:
@@ -148,9 +158,24 @@ while game_loop:
         if bullet:
             bullet_sprites_list.add(bullet)
 
+    counting_time = pygame.time.get_ticks() - start_time
+
+    # change milliseconds into minutes, seconds, milliseconds
+    counting_minutes = 5 - (counting_time / 60000)
+    counting_seconds = int(60 - (counting_time % 60000) / 1000)
+
+    counting_string = "%d:%d" % (counting_minutes, counting_seconds)
+
+    counting_text = font.render(str(counting_string), 1, (255, 255, 255))
+    counting_rect = counting_text.get_rect(midtop=screen.get_rect().midtop)
+
+    screen.blit(counting_text, counting_rect)
+    if int(counting_minutes) == 4 and counting_seconds == 0:
+        game_loop = False
+    pygame.display.update()
+
 
     # Game logic
-
     # Kills enemy when they collide with player
     for enemy in pygame.sprite.groupcollide(bullet_sprites_list, enemy_sprites_list, 1, 1):
         pass
