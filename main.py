@@ -377,6 +377,7 @@ def multiplayer_screen():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 game_loop = False
+                current_state = screen_states['quit']
             elif event.type == INVINCIBILITY_END:
                 invincible = False
                 pygame.time.set_timer(INVINCIBILITY_END, 0)
@@ -455,7 +456,7 @@ def multiplayer_screen():
             dead_sprites_list.add(enemy[0])
             enemy[0].dead = True
             enemy_sprites_list.remove(enemy[0])
-            
+
         for enemy in pygame.sprite.groupcollide(bullet_sprites_list, player2_sprites_list, 1, 0):
             if not invincible:
                 current = hearts2[-1]
