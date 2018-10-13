@@ -193,7 +193,7 @@ def singleplayer_screen():
         counting_rect = counting_text.get_rect(midtop=screen.get_rect().midtop)
 
         screen.blit(counting_text, counting_rect)
-        if int(counting_minutes) == 4 and counting_seconds == 0:
+        if int(counting_minutes) == 0 and counting_seconds == 0:
             game_loop = False
         #screen.blit(counting_text, counting_rect)
         #pygame.display.update()
