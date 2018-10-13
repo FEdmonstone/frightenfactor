@@ -20,7 +20,7 @@ RED   = (255, 0,   0)
 
 # Game settings (intervals in milliseconds)
 INVINCIBILITY_DURATION = 1500
-invincible = False
+invincible = False      # After-hit invincibility state
 
 # Event definitions
 events = {PLAYERS_CAN_SHOOT: {"interval": 400, "count": 0},
@@ -94,6 +94,7 @@ temp_enemy2.rect.y = HEIGHT / 3
 
 # Game initialisation ends
 
+
 # Event timers
 # Generate time-based events
 def generate_time_based_events():
@@ -105,6 +106,13 @@ def generate_time_based_events():
             new_event = pygame.event.Event(pygame.USEREVENT, {"subtype": event_type})
             pygame.event.post(new_event)
             event_props["count"] += 1
+"""
+WIP
+
+# Add an event to a list, it will be performed every 'interval' amount of milliseconds
+def add_time_based_event(event_type, interval):
+    events[event_type] = {"interval": interval, "count": 0}
+"""
 
 
 # Main game loop
@@ -128,11 +136,10 @@ while game_loop:
                 new_enemy.rect.y = random.randint(64, HEIGHT-64)
                 enemy_sprites_list.add(new_enemy)
 
-
     keys = pygame.key.get_pressed()
     # Movement event
     if keys[keybindings['left']]:
-        main_player.moveLeft(borders)
+        main_player.moveLeft()
     if keys[keybindings['right']]:
         main_player.moveRight(borders)
     if keys[keybindings['up']]:
@@ -148,7 +155,6 @@ while game_loop:
 
 
     # Game logic
-
     # Kills enemy when they collide with player
     for enemy in pygame.sprite.groupcollide(bullet_sprites_list, enemy_sprites_list, 1, 1):
         pass
