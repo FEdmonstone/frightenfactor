@@ -100,6 +100,12 @@ def main_menu_screen():
         clock.tick(60)
 
 def singleplayer_screen():
+    player_sprites_list = pygame.sprite.Group()
+    enemy_sprites_list = pygame.sprite.Group()
+    bullet_sprites_list = pygame.sprite.Group()
+    health_sprites_list = pygame.sprite.Group()
+    dead_sprites_list = pygame.sprite.Group()
+    
     num_health = 3
     hearts = []
     for count in range(num_health):
@@ -198,8 +204,10 @@ def singleplayer_screen():
 
         # Game logic
         
-        for enemy in pygame.sprite.groupcollide(bullet_sprites_list, enemy_sprites_list, 1, 1):
-            pass
+        for enemy in pygame.sprite.groupcollide(bullet_sprites_list, enemy_sprites_list, 1, 0).values():
+            dead_sprites_list.add(enemy[0])
+            enemy[0].dead = True
+            enemy_sprites_list.remove(enemy[0])
 
         # Kills player when they collide with enemy
         for player in pygame.sprite.groupcollide(player_sprites_list, enemy_sprites_list, 0, 0):
@@ -227,6 +235,7 @@ def singleplayer_screen():
         bullet_sprites_list.update()
         health_sprites_list.update()
         spit_sprites.update()
+        dead_sprites_list.update()
 
         # Drawing logic
         offset +=1
@@ -257,6 +266,7 @@ def singleplayer_screen():
         bullet_sprites_list.draw(screen)
         health_sprites_list.draw(screen)
         spit_sprites.draw(screen)
+        dead_sprites_list.draw(screen)
 
         # Screen update
         pygame.display.flip()
