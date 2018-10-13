@@ -82,15 +82,36 @@ def generate_time_based_events():
             pygame.event.post(new_event)
             event_props["count"] += 1
 
+frozen = True
 
 # Main menu loop
 
 def main_menu_screen():
+
+    def button(x,y,w,h):
+        global frozen
+        mouse = pygame.mouse.get_pos()
+        click = pygame.mouse.get_pressed()
+        if x+w > mouse[0] > x and y+h > mouse[1] > y:
+            if click[0] == 1:
+                frozen = False
+                print("Test")
+
+    #while frozen:
+    #    for event in pygame.event.get():
+    #        if event.type == pygame.QUIT:
+    #            pygame.quit()
+    #            quit()
+    #        button(0, HEIGHT/2 - 100, WIDTH, HEIGHT/4)
+    #    pygame.display.flip()
+    #    clock.tick(60)
+
     menu_loop = True
     while menu_loop:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 menu_loop = False
+            button(WIDTH / 2 - 128, HEIGHT / 2 - 32, 256, 64)
 
         screen.blit(main_menu.background, (0, 0))
         main_menu.button_sprites_list.update()
@@ -479,15 +500,13 @@ screen_states = {
     'help' : 4
 }
 
-current_state = screen_states['singleplayer']
+current_state = screen_states['mainmenu']
 while main_loop:
     print(current_state)
     if current_state == screen_states['mainmenu']:
         main_menu_screen()
-        current_state = screen_states['singleplayer']
     elif current_state == screen_states['singleplayer']:
         singleplayer_screen()
-        main_loop = False
     elif current_state == screen_states['multiplayer']:
         multiplayer_screen()
     elif current_state == screen_states['options']:
