@@ -5,6 +5,7 @@ from player import Player
 from enemy import Enemy
 from bullet import Bullet
 from health import Health
+from main_menu import Main_menu
 
 # Game initialisation begins
 
@@ -55,10 +56,13 @@ keybindings = {
 debug_font = pygame.font.SysFont("Courier", 12)
 
 # Sprite setup
+main_menu = Main_menu(WIDTH, HEIGHT)
+
 player_sprites_list = pygame.sprite.Group()
 enemy_sprites_list = pygame.sprite.Group()
 bullet_sprites_list = pygame.sprite.Group()
 health_sprites_list = pygame.sprite.Group()
+
 
 background = pygame.image.load("Assets/Backgrounds/background.png").convert_alpha()
 
@@ -100,6 +104,17 @@ def generate_time_based_events():
             pygame.event.post(new_event)
             event_props["count"] += 1
 
+
+# Main menu loop
+
+menu_loop = True
+
+while menu_loop:
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            game_loop = False
+
+    main_menu.button_sprites_list.draw(screen)
 
 # Main game loop
 while game_loop:
