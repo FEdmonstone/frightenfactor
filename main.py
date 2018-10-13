@@ -92,17 +92,9 @@ enemy_sprites_list.add(temp_enemy2)
 temp_enemy2.rect.x = WIDTH - (temp_enemy2.width + 20)
 temp_enemy2.rect.y = HEIGHT / 3
 
-<<<<<<< Updated upstream
 # Game initialisation ends
-=======
-
 
 # Event timers
-pygame.time.set_timer(PLAYERS_CAN_SHOOT, PLAYER_SHOOTING_INTERVAL)
-pygame.time.set_timer(ENEMY_SPAWN, ENEMY_SPAWN_INTERVAL)
->>>>>>> Stashed changes
-
-
 # Generate time-based events
 def generate_time_based_events():
     ms_elapsed = pygame.time.get_ticks()
