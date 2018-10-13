@@ -21,6 +21,9 @@ RED   = (255, 0,   0)
 # Game settings (intervals in milliseconds)
 INVINCIBILITY_DURATION = 1500
 invincible = False
+running = True
+font = pygame.font.SysFont(None, 32)
+start_time = pygame.time.get_ticks()
 
 # Event definitions
 events = {PLAYERS_CAN_SHOOT: {"interval": 400, "count": 0},
@@ -145,6 +148,22 @@ while game_loop:
         bullet = main_player.shoot()
         if bullet:
             bullet_sprites_list.add(bullet)
+
+    counting_time = pygame.time.get_ticks() - start_time
+
+    # change milliseconds into minutes, seconds, milliseconds
+    counting_minutes = 5 - (counting_time / 60000)
+    counting_seconds = int(60 - (counting_time % 60000) / 1000)
+
+    counting_string = "%d:%d" % (counting_minutes, counting_seconds)
+
+    counting_text = font.render(str(counting_string), 1, (255, 255, 255))
+    counting_rect = counting_text.get_rect(midtop=screen.get_rect().midtop)
+
+    screen.blit(counting_text, counting_rect)
+    if int(counting_minutes) == 4 and counting_seconds == 0:
+        game_loop = False
+    pygame.display.update()
 
 
     # Game logic
