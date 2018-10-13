@@ -1,6 +1,8 @@
 import pygame, os
 from bullet import Bullet
+from sound_manager import *
 WHITE = (255, 255, 255)
+
 
 class Player(pygame.sprite.Sprite):
     def __init__(self, colour, width, height):
@@ -48,6 +50,8 @@ class Player(pygame.sprite.Sprite):
 
 
             self.can_shoot = False
+
+            gun_sound.play()
 
             return bullet
 

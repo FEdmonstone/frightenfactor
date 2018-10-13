@@ -2,6 +2,7 @@ import pygame, os, random
 from enemy import Enemy
 from bullet import Bullet
 from drawing_manager import *
+from sound_manager import *
 
 
 class FlyingZombie(Enemy):
@@ -15,11 +16,16 @@ class FlyingZombie(Enemy):
         self.animation_counter = 0
         self.can_shoot = False
         self.spitting_interval = random.randint(2000, 3500)
+        
+        self.dead = False
 
 
     def move(self):
-        self.image = self.move_sprites[(self.animation_counter // 10) % len(self.move_sprites)]
-        self.animation_counter += 1
+        if self.dead:
+            self.image = pygame.transform.scale(pygame.image.load("Assets/Sprites/blood.png"), (64, 64))
+        else:
+            self.image = self.move_sprites[(self.animation_counter // 10) % len(self.move_sprites)]
+            self.animation_counter += 1
         super().move()
 
         if self.can_shoot:
@@ -32,5 +38,7 @@ class FlyingZombie(Enemy):
             bullet.rect.y = self.rect.y
             bullet.direction = "down"
             spit_sprites.add(bullet)
+
+            zombie_spit_sound.play()
 
             self.can_shoot = False
