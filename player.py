@@ -96,6 +96,4 @@ class Player(pygame.sprite.Sprite):
                 self.image = self.right_walking_sprites[(self.counter // 10) % len(self.right_walking_sprites)]
             else:
                 self.image = self.left_walking_sprites[(self.counter // 10) % len(self.left_walking_sprites)]
-
             self.counter += 1
-

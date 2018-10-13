@@ -5,6 +5,8 @@ from player import Player
 from enemy import Enemy
 from bullet import Bullet
 from health import Health
+from basic_zombie import BasicZombie
+from flying_zombie import FlyingZombie
 
 # Game initialisation begins
 
@@ -22,12 +24,13 @@ RED   = (255, 0,   0)
 INVINCIBILITY_DURATION = 1500
 invincible = False      # After-hit invincibility state
 running = True
-font = pygame.font.SysFont(None, 32)
+timer_font = pygame.font.SysFont('Courier', 32)
 start_time = pygame.time.get_ticks()
 
 # Event definitions
 events = {PLAYERS_CAN_SHOOT: {"interval": 400, "count": 0},
-          ENEMY_SPAWN: {"interval": 1000, "count": 0}}
+          BASIC_ZOMBIE_SPAWN: {"interval": 10000, "count": 0},
+          FLYING_ZOMBIE_SPAWN: {"interval": 450, "count": 0}}
 
 # Window settings
 
@@ -87,16 +90,6 @@ player_sprites_list.add(main_player)
 main_player.rect.x = 20
 main_player.rect.y = HEIGHT / 2
 
-temp_enemy1 = Enemy(BLUE, 64, 64)
-enemy_sprites_list.add(temp_enemy1)
-temp_enemy1.rect.x = WIDTH - (temp_enemy1.width + 20)
-temp_enemy1.rect.y = HEIGHT / 3 * 2
-
-temp_enemy2 = Enemy(BLUE, 64, 64)
-enemy_sprites_list.add(temp_enemy2)
-temp_enemy2.rect.x = WIDTH - (temp_enemy2.width + 20)
-temp_enemy2.rect.y = HEIGHT / 3
-
 # Game initialisation ends
 
 
@@ -135,10 +128,17 @@ while game_loop:
             if event.dict["subtype"] == PLAYERS_CAN_SHOOT:
                 for player in player_sprites_list:
                     player.can_shoot = True
-            elif event.dict["subtype"] == ENEMY_SPAWN:
-                new_enemy = Enemy(BLUE, 64, 64)
+
+            elif event.dict["subtype"] == BASIC_ZOMBIE_SPAWN:
+                new_enemy = BasicZombie(64, 64)
                 new_enemy.rect.x = WIDTH - 64
                 new_enemy.rect.y = random.randint(borders[2], borders[1]-64)
+                enemy_sprites_list.add(new_enemy)
+
+            elif event.dict["subtype"] == FLYING_ZOMBIE_SPAWN:
+                new_enemy = FlyingZombie(64, 64)
+                new_enemy.rect.x = WIDTH - 64
+                new_enemy.rect.y = random.randint(0, borders[2]-64)
                 enemy_sprites_list.add(new_enemy)
 
     keys = pygame.key.get_pressed()
@@ -167,13 +167,17 @@ while game_loop:
 
     counting_string = "%d:%d" % (counting_minutes, counting_seconds)
 
-    counting_text = font.render(str(counting_string), 1, (255, 255, 255))
-    counting_rect = counting_text.get_rect(midtop=screen.get_rect().midtop)
+    #counting_rect = counting_text.get_rect(midtop=screen.get_rect().midtop)
 
+<<<<<<< HEAD
     screen.blit(counting_text, counting_rect)
     if int(counting_minutes) == 0 and counting_seconds == 0:
+=======
+    if int(counting_minutes) == 4 and counting_seconds == 0:
+>>>>>>> 4a227b0504136dc7329edf0614157bad23961095
         game_loop = False
-    pygame.display.update()
+    #screen.blit(counting_text, counting_rect)
+    #pygame.display.update()
 
 
     # Game logic
@@ -188,7 +192,7 @@ while game_loop:
             del hearts[-1]
             invincible = True
             pygame.time.set_timer(INVINCIBILITY_END, INVINCIBILITY_DURATION)
-            
+
     if not hearts:
         pygame.sprite.groupcollide(player_sprites_list, enemy_sprites_list, 1, 0)
 
@@ -216,6 +220,10 @@ while game_loop:
     fps_str = "".join(["FPS: ", str(int(clock.get_fps()))])
     fps = debug_font.render(fps_str, True, WHITE)
     screen.blit(fps, (50, 50))
+
+    # Timer counter
+    counting_text = timer_font.render(str(counting_string), True, WHITE)
+    screen.blit(counting_text, (WIDTH / 2, 10))
 
     player_sprites_list.draw(screen)
     enemy_sprites_list.draw(screen)
