@@ -135,7 +135,7 @@ while game_loop:
     for enemy in pygame.sprite.groupcollide(bullet_sprites_list, enemy_sprites_list, 1, 1):
         pass
 
-    for player in pygame.sprite.groupcollide(player_sprites_list, enemy_sprites_list, 1, 0):
+    for player in pygame.sprite.groupcollide(player_sprites_list, enemy_sprites_list, 0, 0):
         if not invincible:
             current = hearts[-1]
             current.kill()
