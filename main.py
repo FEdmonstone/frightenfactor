@@ -112,9 +112,14 @@ menu_loop = True
 while menu_loop:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
-            game_loop = False
+            pygame.quit()
 
+    screen.blit(background, (0, 0))
+    main_menu.button_sprites_list.update()
     main_menu.button_sprites_list.draw(screen)
+
+    pygame.display.flip()
+    clock.tick(60)
 
 # Main game loop
 while game_loop:
