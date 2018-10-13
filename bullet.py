@@ -9,7 +9,7 @@ class Bullet(pygame.sprite.Sprite):
 
         self.speed = 10
 
-        self.image = pygame.image.load(".temp_images/bullet.png").convert_alpha()
+        self.image = pygame.image.load("Assets/Sprites/bullet.png").convert_alpha()
 
         self.rect = self.image.get_rect()
 

@@ -12,7 +12,7 @@ class Player(pygame.sprite.Sprite):
 
         #pygame.draw.rect(self.image, colour, [0, 0, width, height])
         
-        self.image = pygame.image.load(".temp_images/player.png").convert_alpha()
+        self.image = pygame.image.load("Assets/Sprites/player.png").convert_alpha()
 
         self.rect = self.image.get_rect()
 

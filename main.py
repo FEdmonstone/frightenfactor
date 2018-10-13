@@ -49,7 +49,7 @@ player_sprites_list = pygame.sprite.Group()
 enemy_sprites_list = pygame.sprite.Group()
 bullet_sprites_list = pygame.sprite.Group()
 
-background = pygame.image.load(".temp_images/background.png").convert_alpha()
+background = pygame.image.load("Assets/Backgrounds/background.png").convert_alpha()
 
 main_player = Player(RED, 64, 64)
 player_sprites_list.add(main_player)
