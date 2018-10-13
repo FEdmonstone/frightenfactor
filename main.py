@@ -6,6 +6,7 @@ from enemy import Enemy
 from bullet import Bullet
 from health import Health
 from basic_zombie import BasicZombie
+from flying_zombie import FlyingZombie
 
 # Game initialisation begins
 
@@ -28,7 +29,8 @@ start_time = pygame.time.get_ticks()
 
 # Event definitions
 events = {PLAYERS_CAN_SHOOT: {"interval": 400, "count": 0},
-          ENEMY_SPAWN: {"interval": 1000, "count": 0}}
+          BASIC_ZOMBIE_SPAWN: {"interval": 10000, "count": 0},
+          FLYING_ZOMBIE_SPAWN: {"interval": 450, "count": 0}}
 
 # Window settings
 
@@ -126,10 +128,17 @@ while game_loop:
             if event.dict["subtype"] == PLAYERS_CAN_SHOOT:
                 for player in player_sprites_list:
                     player.can_shoot = True
-            elif event.dict["subtype"] == ENEMY_SPAWN:
+
+            elif event.dict["subtype"] == BASIC_ZOMBIE_SPAWN:
                 new_enemy = BasicZombie(64, 64)
                 new_enemy.rect.x = WIDTH - 64
                 new_enemy.rect.y = random.randint(64, borders[1]-64)
+                enemy_sprites_list.add(new_enemy)
+
+            elif event.dict["subtype"] == FLYING_ZOMBIE_SPAWN:
+                new_enemy = FlyingZombie(64, 64)
+                new_enemy.rect.x = WIDTH - 64
+                new_enemy.rect.y = random.randint(0, borders[2]-64)
                 enemy_sprites_list.add(new_enemy)
 
     keys = pygame.key.get_pressed()

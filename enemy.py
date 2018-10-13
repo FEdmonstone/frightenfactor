@@ -1,5 +1,5 @@
 import pygame
-WHITE = (255, 255, 255)
+
 
 class Enemy(pygame.sprite.Sprite):
     def __init__(self, width, height):
