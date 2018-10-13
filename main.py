@@ -8,6 +8,7 @@ from health import Health
 from main_menu import Main_menu
 from basic_zombie import BasicZombie
 from flying_zombie import FlyingZombie
+from drawing_manager import *
 
 # Game initialisation begins
 
@@ -27,12 +28,12 @@ timer_font = pygame.font.SysFont('Courier', 32)
 
 # Event definitions
 events = {PLAYERS_CAN_SHOOT: {"interval": 400, "count": 0},
-          BASIC_ZOMBIE_SPAWN: {"interval": 10000, "count": 0},
-          FLYING_ZOMBIE_SPAWN: {"interval": 450, "count": 0}}
+          BASIC_ZOMBIE_SPAWN: {"interval": 100000, "count": 0},
+          FLYING_ZOMBIE_SPAWN: {"interval": 5000, "count": 0},
+          FLYING_ZOMBIES_CAN_SHOOT: {"interval": 4000, "count":0 }}
 
 # Window settings
-
-WIDTH  = 1280
+WIDTH = 1280
 HEIGHT = 720
 
 size = (WIDTH, HEIGHT)
@@ -75,13 +76,6 @@ def generate_time_based_events():
             new_event = pygame.event.Event(pygame.USEREVENT, {"subtype": event_type})
             pygame.event.post(new_event)
             event_props["count"] += 1
-"""
-WIP
-
-# Add an event to a list, it will be performed every 'interval' amount of milliseconds
-def add_time_based_event(event_type, interval):
-    events[event_type] = {"interval": interval, "count": 0}
-"""
 
 
 # Main menu loop
@@ -101,12 +95,6 @@ def main_menu_screen():
         clock.tick(60)
 
 def singleplayer_screen():
-
-    player_sprites_list = pygame.sprite.Group()
-    enemy_sprites_list = pygame.sprite.Group()
-    bullet_sprites_list = pygame.sprite.Group()
-    health_sprites_list = pygame.sprite.Group()
-
     num_health = 3
     hearts = []
     for count in range(num_health):
@@ -137,7 +125,6 @@ def singleplayer_screen():
     
     game_loop = True
     while game_loop:
-
         # Main event loop
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -162,6 +149,11 @@ def singleplayer_screen():
                     new_enemy.rect.x = WIDTH - 64
                     new_enemy.rect.y = random.randint(0, borders[2]-64)
                     enemy_sprites_list.add(new_enemy)
+
+                elif event.dict["subtype"] == FLYING_ZOMBIES_CAN_SHOOT:
+                    for enemy in enemy_sprites_list:
+                        if isinstance(enemy, FlyingZombie):
+                            enemy.can_shoot = True
 
         keys = pygame.key.get_pressed()
         # Movement event
@@ -213,13 +205,23 @@ def singleplayer_screen():
                 invincible = True
                 pygame.time.set_timer(INVINCIBILITY_END, INVINCIBILITY_DURATION)
 
+        for player in pygame.sprite.groupcollide(player_sprites_list, spit_sprites, 0, 1):
+            if not invincible:
+                current = hearts[-1]
+                current.kill()
+                del hearts[-1]
+                invincible = True
+                pygame.time.set_timer(INVINCIBILITY_END, INVINCIBILITY_DURATION)
+
         if not hearts:
             pygame.sprite.groupcollide(player_sprites_list, enemy_sprites_list, 1, 0)
+            game_loop = False
 
         player_sprites_list.update()
         enemy_sprites_list.update()
         bullet_sprites_list.update()
         health_sprites_list.update()
+        spit_sprites.update()
 
         # Drawing logic
         offset +=1
@@ -249,6 +251,7 @@ def singleplayer_screen():
         enemy_sprites_list.draw(screen)
         bullet_sprites_list.draw(screen)
         health_sprites_list.draw(screen)
+        spit_sprites.draw(screen)
 
         # Screen update
         pygame.display.flip()
@@ -274,7 +277,7 @@ screen_states = {
     'help' : 4
 }
 
-current_state = screen_states['mainmenu']
+current_state = screen_states['singleplayer']
 while main_loop:
     print(current_state)
     if current_state == screen_states['mainmenu']:
