@@ -23,10 +23,7 @@ RED   = (255, 0,   0)
 
 # Game settings (intervals in milliseconds)
 INVINCIBILITY_DURATION = 1500
-invincible = False      # After-hit invincibility state
-running = True
 timer_font = pygame.font.SysFont('Courier', 32)
-start_time = pygame.time.get_ticks()
 
 # Event definitions
 events = {PLAYERS_CAN_SHOOT: {"interval": 400, "count": 0},
@@ -64,35 +61,6 @@ debug_font = pygame.font.SysFont("Courier", 12)
 # Sprite setup
 main_menu = Main_menu(WIDTH, HEIGHT)
 
-player_sprites_list = pygame.sprite.Group()
-enemy_sprites_list = pygame.sprite.Group()
-bullet_sprites_list = pygame.sprite.Group()
-health_sprites_list = pygame.sprite.Group()
-
-horizon = list(pygame.image.load("Assets/Backgrounds/horizon.png").get_rect().size)
-borders = [WIDTH, HEIGHT, horizon[1]]
-bck_image_width = horizon[0]
-
-background = pygame.image.load("Assets/Backgrounds/background.png").convert_alpha()
-background_horizon = pygame.image.load("Assets/Backgrounds/horizon.png").convert_alpha()
-offset = 0
-offset2 = -bck_image_width
-
-
-num_health = 3
-hearts = []
-for count in range(num_health):
-    elem = Health(WHITE, 20, 20)
-    health_sprites_list.add(elem)
-    elem.rect.x = count * 64
-    elem.rect.y = 0
-    hearts.append(elem)
-
-main_player = Player(RED, 64, 64)
-player_sprites_list.add(main_player)
-main_player.rect.x = 20
-main_player.rect.y = HEIGHT / 2
-
 # Game initialisation ends
 
 
@@ -123,7 +91,7 @@ def main_menu_screen():
     while menu_loop:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                pygame.quit()
+                menu_loop = False
 
         screen.blit(main_menu.background, (0, 0))
         main_menu.button_sprites_list.update()
@@ -133,6 +101,39 @@ def main_menu_screen():
         clock.tick(60)
 
 def singleplayer_screen():
+
+    player_sprites_list = pygame.sprite.Group()
+    enemy_sprites_list = pygame.sprite.Group()
+    bullet_sprites_list = pygame.sprite.Group()
+    health_sprites_list = pygame.sprite.Group()
+
+    num_health = 3
+    hearts = []
+    for count in range(num_health):
+        elem = Health(WHITE, 20, 20)
+        health_sprites_list.add(elem)
+        elem.rect.x = count * 64
+        elem.rect.y = 0
+        hearts.append(elem)
+
+    main_player = Player(RED, 64, 64)
+    player_sprites_list.add(main_player)
+    main_player.rect.x = 20
+    main_player.rect.y = HEIGHT / 2
+
+    invincible = False      # After-hit invincibility state
+    running = True
+    start_time = pygame.time.get_ticks()
+
+    horizon = list(pygame.image.load("Assets/Backgrounds/horizon.png").get_rect().size)
+    borders = [WIDTH, HEIGHT, horizon[1]]
+    bck_image_width = horizon[0]
+
+    background = pygame.image.load("Assets/Backgrounds/background.png").convert_alpha()
+    background_horizon = pygame.image.load("Assets/Backgrounds/horizon.png").convert_alpha()
+
+    offset = 0
+    offset2 = -bck_image_width
     
     game_loop = True
     while game_loop:
@@ -277,8 +278,10 @@ while main_loop:
     print(current_state)
     if current_state == screen_states['mainmenu']:
         main_menu_screen()
+        current_state = screen_states['singleplayer']
     elif current_state == screen_states['singleplayer']:
         singleplayer_screen()
+        main_loop = False
     elif current_state == screen_states['multiplayer']:
         multiplayer_screen()
     elif current_state == screen_states['options']:
