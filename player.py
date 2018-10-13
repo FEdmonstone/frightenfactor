@@ -1,4 +1,5 @@
 import pygame
+from bullet import Bullet
 WHITE = (255, 255, 255)
 
 class Player(pygame.sprite.Sprite):
@@ -7,7 +8,7 @@ class Player(pygame.sprite.Sprite):
 
         self.change_size(width, height)
 
-        self.max_speed = 5
+        self.speed = 5
 
         #pygame.draw.rect(self.image, colour, [0, 0, width, height])
         
@@ -22,14 +23,20 @@ class Player(pygame.sprite.Sprite):
         self.image.fill(WHITE)
         self.image.set_colorkey(WHITE)
 
+    def shoot(self):
+        bullet = Bullet(64, 64)
+        bullet.rect.x = self.rect.x
+        bullet.rect.y = self.rect.y
+        return bullet
+
     def moveRight(self):
-        self.rect.x += self.max_speed
+        self.rect.x += self.speed
 
     def moveLeft(self):
-        self.rect.x -= self.max_speed
+        self.rect.x -= self.speed
 
     def moveUp(self):
-        self.rect.y -= self.max_speed
+        self.rect.y -= self.speed
 
     def moveDown(self):
-        self.rect.y += self.max_speed
+        self.rect.y += self.speed

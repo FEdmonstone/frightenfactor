@@ -2,6 +2,7 @@ import pygame
 import random
 from player import Player
 from enemy import Enemy
+from bullet import Bullet
 
 # Game initialisation begins
 
@@ -23,7 +24,6 @@ HEIGHT = 720
 size = (WIDTH, HEIGHT)
 screen = pygame.display.set_mode(size)
 pygame.display.set_caption("Frighten Factory")
-all_sprites_list = pygame.sprite.Group()
 
 game_loop = True
 
@@ -37,24 +37,35 @@ keybindings = {
     'left'  : pygame.K_LEFT,
     'right' : pygame.K_RIGHT,
     'up'    : pygame.K_UP,
-    'down'  : pygame.K_DOWN
+    'down'  : pygame.K_DOWN,
+    'fire'  : pygame.K_SPACE
 }
 
 # Font setup
 debug_font = pygame.font.SysFont("Courier", 12)
 
 # Sprite setup
+player_sprites_list = pygame.sprite.Group()
+enemy_sprites_list = pygame.sprite.Group()
+bullet_sprites_list = pygame.sprite.Group()
+
 background = pygame.image.load(".temp_images/background.png").convert_alpha()
 
 main_player = Player(RED, 64, 64)
-all_sprites_list.add(main_player)
+player_sprites_list.add(main_player)
 main_player.rect.x = 20
 main_player.rect.y = HEIGHT / 2
 
-temp_enemy = Enemy(BLUE, 64, 64)
-all_sprites_list.add(temp_enemy)
-temp_enemy.rect.x = WIDTH - (temp_enemy.width + 20)
-temp_enemy.rect.y = HEIGHT / 2
+temp_enemy1 = Enemy(BLUE, 64, 64)
+enemy_sprites_list.add(temp_enemy1)
+temp_enemy1.rect.x = WIDTH - (temp_enemy1.width + 20)
+temp_enemy1.rect.y = HEIGHT / 3 * 2
+
+temp_enemy2 = Enemy(BLUE, 64, 64)
+enemy_sprites_list.add(temp_enemy2)
+temp_enemy2.rect.x = WIDTH - (temp_enemy2.width + 20)
+temp_enemy2.rect.y = HEIGHT / 3
+
 
 # Game initialisation ends
 
@@ -66,26 +77,35 @@ while game_loop:
         if event.type == pygame.QUIT:
             game_loop = False
 
-        # Movement event
         keys = pygame.key.get_pressed()
+        # Movement event
         if keys[keybindings['left']]:
-            print("Left")
             main_player.moveLeft()
         if keys[keybindings['right']]:
-            print("Right")
             main_player.moveRight()
         if keys[keybindings['up']]:
-            print("Up")
             main_player.moveUp()
         if keys[keybindings['down']]:
-            print("Down")
             main_player.moveDown()
+
+        # Fire event
+        if keys[keybindings['fire']]:
+            bullet = main_player.shoot()
+            bullet_sprites_list.add(bullet)
 
 
     # Game logic
 
-    temp_enemy.update()
-    all_sprites_list.update()
+    # Kills enemy when they collide with player
+    for enemy in pygame.sprite.groupcollide(bullet_sprites_list, enemy_sprites_list, 1, 1):
+        pass
+
+    for player in pygame.sprite.groupcollide(player_sprites_list, enemy_sprites_list, 1, 0):
+        pass
+
+    player_sprites_list.update()
+    enemy_sprites_list.update()
+    bullet_sprites_list.update()
 
     # Drawing logic
 
@@ -93,14 +113,12 @@ while game_loop:
 
     # FPS counter
     fps_str = "".join(["FPS: ", str(int(clock.get_fps()))])
-    fps = debug_font.render(fps_str, True, BLACK)
+    fps = debug_font.render(fps_str, True, WHITE)
     screen.blit(fps, (50, 50))
 
-    all_sprites_list.draw(screen)
-
-    #pygame.draw.rect(screen, RED, [55, 200, 100, 70], 0)
-    #pygame.draw.line(screen, GREEN, [0, 0], [100, 100], 5)
-    #pygame.draw.ellipse(screen, BLACK, [20, 20, 250, 100], 2)
+    player_sprites_list.draw(screen)
+    enemy_sprites_list.draw(screen)
+    bullet_sprites_list.draw(screen)
 
     # Screen update
     pygame.display.flip()
