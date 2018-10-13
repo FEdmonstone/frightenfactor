@@ -9,3 +9,5 @@ zombie_hit_sound = pygame.mixer.Sound("Assets/Sounds/zombie_hit.wav")
 zombie_attack_melee_sound = pygame.mixer.Sound("Assets/Sounds/zombie_melee_attack.wav")
 zombie_spit_sound = pygame.mixer.Sound("Assets/Sounds/zombie_spit.wav")
 player_hit = pygame.mixer.Sound("Assets/Sounds/player_hit.wav")
+
+stage_theme = pygame.mixer.Sound("Assets/Sounds/stage_theme.ogg")

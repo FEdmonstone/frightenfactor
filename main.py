@@ -122,12 +122,14 @@ def main_menu_screen():
         clock.tick(60)
 
 def singleplayer_screen():
+    stage_theme.play(loops=-1)
     player_sprites_list = pygame.sprite.Group()
     enemy_sprites_list = pygame.sprite.Group()
     bullet_sprites_list = pygame.sprite.Group()
     health_sprites_list = pygame.sprite.Group()
     dead_sprites_list = pygame.sprite.Group()
     
+
     num_health = 3
     hearts = []
     for count in range(num_health):
@@ -146,12 +148,12 @@ def singleplayer_screen():
     running = True
     start_time = pygame.time.get_ticks()
 
-    horizon = list(pygame.image.load("Assets/Backgrounds/horizon.png").get_rect().size)
+    horizon = list(pygame.image.load("Assets/Backgrounds/horizonfull.png").get_rect().size)
     borders = [WIDTH, HEIGHT, horizon[1]]
     bck_image_width = horizon[0]
 
     background = pygame.image.load("Assets/Backgrounds/Background.png").convert_alpha()
-    background_horizon = pygame.image.load("Assets/Backgrounds/horizon.png").convert_alpha()
+    background_horizon = pygame.image.load("Assets/Backgrounds/horizonfull.png").convert_alpha()
 
     offset = 0
     offset2 = -bck_image_width
@@ -340,12 +342,12 @@ def multiplayer_screen():
     running = True
     start_time = pygame.time.get_ticks()
 
-    horizon = list(pygame.image.load("Assets/Backgrounds/horizon.png").get_rect().size)
+    horizon = list(pygame.image.load("Assets/Backgrounds/horizonfull.png").get_rect().size)
     borders = [WIDTH, HEIGHT, horizon[1]]
     bck_image_width = horizon[0]
 
     background = pygame.image.load("Assets/Backgrounds/background.png").convert_alpha()
-    background_horizon = pygame.image.load("Assets/Backgrounds/horizon.png").convert_alpha()
+    background_horizon = pygame.image.load("Assets/Backgrounds/horizonfull.png").convert_alpha()
 
     offset = 0
     offset2 = -bck_image_width
