@@ -2,6 +2,7 @@ import pygame, os, random
 from enemy import Enemy
 from bullet import Bullet
 from drawing_manager import *
+from sound_manager import *
 
 
 class FlyingZombie(Enemy):
@@ -32,5 +33,7 @@ class FlyingZombie(Enemy):
             bullet.rect.y = self.rect.y
             bullet.direction = "down"
             spit_sprites.add(bullet)
+
+            zombie_spit_sound.play()
 
             self.can_shoot = False
