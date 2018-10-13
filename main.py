@@ -21,6 +21,8 @@ RED   = (255, 0,   0)
 # Game settings (intervals in milliseconds)
 PLAYER_SHOOTING_INTERVAL = 400
 ENEMY_SPAWN_INTERVAL = 1000
+INVINCIBILITY_DURATION = 1500
+invincible = False
 
 # Window settings
 
@@ -61,14 +63,11 @@ background = pygame.image.load("Assets/Backgrounds/background.png").convert_alph
 num_health = 3
 hearts = []
 for count in range(num_health):
-    hearts.append("heart" + str(count + 1))
-position_index = 0
-for elem in hearts:
     elem = Health(WHITE, 20, 20)
     health_sprites_list.add(elem)
-    elem.rect.x = position_index * 64
+    elem.rect.x = count * 64
     elem.rect.y = 0
-    position_index += 1
+    hearts.append(elem)
 
 main_player = Player(RED, 64, 64)
 player_sprites_list.add(main_player)
@@ -108,6 +107,9 @@ while game_loop:
             new_enemy.rect.x = WIDTH - 64
             new_enemy.rect.y = random.randint(64, HEIGHT-64)
             enemy_sprites_list.add(new_enemy)
+        elif event.type == INVINCIBILITY_END:
+            invincible = False
+            pygame.time.set_timer(INVINCIBILITY_END, 0)
 
     keys = pygame.key.get_pressed()
     # Movement event
@@ -134,7 +136,15 @@ while game_loop:
         pass
 
     for player in pygame.sprite.groupcollide(player_sprites_list, enemy_sprites_list, 1, 0):
-        pass
+        if not invincible:
+            current = hearts[-1]
+            current.kill()
+            del hearts[-1]
+            invincible = True
+            pygame.time.set_timer(INVINCIBILITY_END, INVINCIBILITY_DURATION)
+            
+    if not hearts:
+    pygame.sprite.groupcollide(player_sprites_list, enemy_sprites_list, 1, 0)
 
     player_sprites_list.update()
     enemy_sprites_list.update()
