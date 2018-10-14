@@ -187,7 +187,6 @@ def singleplayer_screen():
     game_loop = True
     while game_loop:
 
-        print(time_since_start_ms)
         time_since_start_ms += clock.get_time()
 
         # Main event loop
@@ -205,7 +204,7 @@ def singleplayer_screen():
                         player.can_shoot = True
 
                 elif event.dict["subtype"] == BASIC_ZOMBIE_SPAWN:
-                    new_enemy = BasicZombie(64, 64)
+                    new_enemy = BasicZombie(32, 32)
                     new_enemy.rect.x = WIDTH - 64
                     new_enemy.rect.y = random.randint(64, borders[1]-64)
                     enemy_sprites_list.add(new_enemy)
@@ -322,6 +321,9 @@ def singleplayer_screen():
         bullet_sprites_list.draw(screen)
         health_sprites_list.draw(screen)
         spit_sprites.draw(screen)
+
+        #pygame.draw.rect(screen, RED, main_player.rect, 1)
+
 
         # Timer counter
         counting_text = timer_font.render(str(counting_string), True, WHITE)

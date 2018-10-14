@@ -27,6 +27,8 @@ class Player(pygame.sprite.Sprite):
         self.faces_right = True
         self.can_shoot = True
 
+        self.rect.inflate_ip(-20,-10)
+
         self.counter = 0
         self.last_direction = 'right'
         
