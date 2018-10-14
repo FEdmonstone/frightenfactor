@@ -75,6 +75,7 @@ main_menu = Main_menu(WIDTH, HEIGHT)
 # Event timers
 # Generate time-based events
 def generate_time_based_events():
+
     ms_elapsed = pygame.time.get_ticks()
 
     # Check whether we should trigger any of the events
@@ -150,7 +151,6 @@ def singleplayer_screen():
     bullet_sprites_list = pygame.sprite.Group()
     health_sprites_list = pygame.sprite.Group()
     dead_sprites_list = pygame.sprite.Group()
-    
 
     num_health = 3
     hearts = []
