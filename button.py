@@ -13,26 +13,3 @@ class Button(pygame.sprite.Sprite):
         self.image = pygame.image.load("Assets/Buttons/" + button_type +".png").convert_alpha()
 
         self.rect = self.image.get_rect()
-
-    # Forgive the following sinful code
-    def on_click(self):
-        if self.button_type == 'singleplayer':
-            singleplayer()
-        elif self.button_type == 'multiplayer':
-            multiplayer()
-        elif self.button_type == 'help':
-            help()
-        elif self.button_type == 'quit':
-            pygame.quit()
-
-    def singleplayer(self):
-        pass
-
-    def multiplayer(self):
-        pass
-
-    def help(self):
-        pass
-
-    def quit(self):
-        pass

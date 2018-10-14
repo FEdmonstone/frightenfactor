@@ -6,6 +6,7 @@ from enemy import Enemy
 from bullet import Bullet
 from health import Health
 from main_menu import Main_menu
+from help_menu import Help_menu
 from basic_zombie import BasicZombie
 from flying_zombie import FlyingZombie
 from drawing_manager import *
@@ -108,7 +109,8 @@ def main_menu_screen():
                         current_state = screen_states['multiplayer']
                         return False
                     elif button_type == 'help':
-                        print("Help")
+                        current_state = screen_states['help']
+                        return False
                     elif button_type == 'quit':
                         current_state = screen_states['quit']
                         return False
@@ -569,7 +571,41 @@ def multiplayer_screen():
         generate_time_based_events()
 
 def help_screen():
-    pass
+
+    help_menu = Help_menu(WIDTH, HEIGHT)
+
+    global current_state
+    help_loop = True
+
+    def button(x,y,w,h,button_type):
+        global frozen
+        global current_state
+        if help_loop:
+            mouse = pygame.mouse.get_pos()
+            click = pygame.mouse.get_pressed()
+            if x+w > mouse[0] > x and y+h > mouse[1] > y:
+                if click[0] == 1:
+                    frozen = False
+                    if button_type == 'back':
+                        current_state = screen_states['mainmenu']
+                        return False
+            return True
+
+    while help_loop:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                current_state = screen_states['quit']
+                help_loop = False
+
+            help_loop = button(WIDTH - 256, HEIGHT - 64, 256, 64, 'back')
+        
+        screen.blit(help_menu.background, (0, 0))
+        help_menu.button_sprites_list.update()
+        help_menu.button_sprites_list.draw(screen)
+
+        pygame.display.flip()
+        clock.tick(60)
+
 
 
 screen_states = {
