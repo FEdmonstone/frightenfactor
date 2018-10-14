@@ -89,21 +89,30 @@ frozen = True
 
 def main_menu_screen():
 
+    global current_state
+    menu_loop = True
+
     def button(x,y,w,h,button_type):
         global frozen
-        mouse = pygame.mouse.get_pos()
-        click = pygame.mouse.get_pressed()
-        if x+w > mouse[0] > x and y+h > mouse[1] > y:
-            if click[0] == 1:
-                frozen = False
-                if button_type == 'singleplayer':
-                    print("Singleplayer")
-                elif button_type == 'multiplayer':
-                    print("Multiplayer")
-                elif button_type == 'help':
-                    print("Help")
-                elif button_type == 'quit':
-                    pygame.quit()
+        global current_state
+        if menu_loop:
+            mouse = pygame.mouse.get_pos()
+            click = pygame.mouse.get_pressed()
+            if x+w > mouse[0] > x and y+h > mouse[1] > y:
+                if click[0] == 1:
+                    frozen = False
+                    if button_type == 'singleplayer':
+                        current_state = screen_states['singleplayer']
+                        return False
+                    elif button_type == 'multiplayer':
+                        current_state = screen_states['multiplayer']
+                        return False
+                    elif button_type == 'help':
+                        print("Help")
+                    elif button_type == 'quit':
+                        current_state = screen_states['quit']
+                        return False
+            return True
 
     #while frozen:
     #    for event in pygame.event.get():
@@ -114,15 +123,15 @@ def main_menu_screen():
     #    pygame.display.flip()
     #    clock.tick(60)
 
-    menu_loop = True
     while menu_loop:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
+                current_state = screen_states['quit']
                 menu_loop = False
-            button(WIDTH / 2 - 128, HEIGHT / 2 - 32, 256, 64, 'singleplayer')
-            button(WIDTH / 2 - 128, HEIGHT / 2 + 64, 256, 64, 'multiplayer')
-            button(WIDTH / 2 - 128, HEIGHT / 2 + 160, 256, 64, 'help')
-            button(WIDTH / 2 - 128, HEIGHT / 2 + 256, 256, 64, 'quit')
+            menu_loop = button(WIDTH / 2 - 128, HEIGHT / 2 - 32, 256, 64, 'singleplayer')
+            menu_loop = button(WIDTH / 2 - 128, HEIGHT / 2 + 64, 256, 64, 'multiplayer')
+            menu_loop = button(WIDTH / 2 - 128, HEIGHT / 2 + 160, 256, 64, 'help')
+            menu_loop = button(WIDTH / 2 - 128, HEIGHT / 2 + 256, 256, 64, 'quit')
 
         screen.blit(main_menu.background, (0, 0))
         main_menu.button_sprites_list.update()
@@ -132,6 +141,7 @@ def main_menu_screen():
         clock.tick(60)
 
 def singleplayer_screen():
+    global current_state
     stage_theme.play(loops=-1)
     player_sprites_list = pygame.sprite.Group()
     enemy_sprites_list = pygame.sprite.Group()
@@ -173,6 +183,7 @@ def singleplayer_screen():
         # Main event loop
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
+                current_state = screen_states['quit']
                 game_loop = False
             elif event.type == INVINCIBILITY_END:
                 invincible = False
@@ -229,7 +240,7 @@ def singleplayer_screen():
         counting_text = debug_font.render(str(counting_string), 1, (255, 255, 255))
         counting_rect = counting_text.get_rect(midtop=screen.get_rect().midtop)
 
-        screen.blit(counting_text, counting_rect)
+        #screen.blit(counting_text, counting_rect)
         if int(counting_minutes) == 0 and counting_seconds == 0:
             game_loop = False
         #screen.blit(counting_text, counting_rect)
@@ -291,16 +302,6 @@ def singleplayer_screen():
             offset = -bck_image_width
         if offset2 > bck_image_width:
             offset2 = -bck_image_width
-            
-
-        # FPS counter
-        fps_str = "".join(["FPS: ", str(int(clock.get_fps()))])
-        fps = debug_font.render(fps_str, True, WHITE)
-        screen.blit(fps, (50, 50))
-
-        # Timer counter
-        counting_text = timer_font.render(str(counting_string), True, WHITE)
-        screen.blit(counting_text, (WIDTH / 2, 10))
 
         dead_sprites_list.draw(screen)
         player_sprites_list.draw(screen)
@@ -308,6 +309,15 @@ def singleplayer_screen():
         bullet_sprites_list.draw(screen)
         health_sprites_list.draw(screen)
         spit_sprites.draw(screen)
+
+        # Timer counter
+        counting_text = timer_font.render(str(counting_string), True, WHITE)
+        screen.blit(counting_text, (WIDTH / 2 - 40, 10))
+
+        # FPS counter
+        fps_str = "".join(["FPS: ", str(int(clock.get_fps()))])
+        fps = debug_font.render(fps_str, True, WHITE)
+        screen.blit(fps, (WIDTH - 80, 20))
 
         # Screen update
         pygame.display.flip()
@@ -317,6 +327,9 @@ def singleplayer_screen():
         generate_time_based_events()
 
 def multiplayer_screen():
+
+    global current_state
+
     stage_theme.play(loops=-1)
     player_sprites_list = pygame.sprite.Group()
     player2_sprites_list = pygame.sprite.Group()
@@ -465,7 +478,7 @@ def multiplayer_screen():
                 invincible = True
                 pygame.time.set_timer(INVINCIBILITY_END, INVINCIBILITY_DURATION)
         if not hearts2:
-            global current_state
+            #global current_state
             current_state = screen_states['mainmenu']
             game_loop = False
 
@@ -489,7 +502,7 @@ def multiplayer_screen():
                 invincible = True
                 pygame.time.set_timer(INVINCIBILITY_END, INVINCIBILITY_DURATION)
         if not hearts:
-            global current_state
+            #global current_state
             current_state = screen_states['mainmenu']
             game_loop = False
 
@@ -555,11 +568,6 @@ def multiplayer_screen():
         # Timer updates
         generate_time_based_events()
 
-
-def options_screen():
-    pass
-
-
 def help_screen():
     pass
 
@@ -568,8 +576,7 @@ screen_states = {
     'mainmenu': 0,
     'singleplayer': 1,
     'multiplayer': 2,
-    'options': 3,
-    'help': 4,
+    'help': 3,
     'quit': 9
 }
 
@@ -577,14 +584,10 @@ current_state = screen_states['mainmenu']
 while main_loop:
     if current_state == screen_states['mainmenu']:
         main_menu_screen()
-        current_state = screen_states['multiplayer']
     elif current_state == screen_states['singleplayer']:
         singleplayer_screen()
-        main_loop = False
     elif current_state == screen_states['multiplayer']:
         multiplayer_screen()
-    elif current_state == screen_states['options']:
-        options_screen()
     elif current_state == screen_states['help']:
         help_screen()
     elif current_state == screen_states['quit']:

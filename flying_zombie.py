@@ -23,6 +23,7 @@ class FlyingZombie(Enemy):
     def move(self):
         if self.dead:
             self.image = pygame.transform.scale(pygame.image.load("Assets/Sprites/blood.png"), (64, 64))
+            super().change_speed(1)
         else:
             self.image = self.move_sprites[(self.animation_counter // 10) % len(self.move_sprites)]
             self.animation_counter += 1

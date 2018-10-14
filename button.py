@@ -20,8 +20,8 @@ class Button(pygame.sprite.Sprite):
             singleplayer()
         elif self.button_type == 'multiplayer':
             multiplayer()
-        elif self.button_type == 'options':
-            options()
+        elif self.button_type == 'help':
+            help()
         elif self.button_type == 'quit':
             pygame.quit()
 
@@ -31,7 +31,7 @@ class Button(pygame.sprite.Sprite):
     def multiplayer(self):
         pass
 
-    def options(self):
+    def help(self):
         pass
 
     def quit(self):
