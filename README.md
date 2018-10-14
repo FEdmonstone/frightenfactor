@@ -1,6 +1,9 @@
 # frightenfactor
 
-MUST INSTALL
+To run: in command console go to directory for frightenfactor and us command python main.py
+<p>or double click / run the main.py file
+
+<p>MUST INSTALL<p>
 python 3.6.*
 
 pygame by (in command console):
