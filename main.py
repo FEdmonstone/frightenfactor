@@ -165,7 +165,7 @@ def singleplayer_screen():
         elem.rect.y = 0
         hearts.append(elem)
 
-    main_player = Player(RED, 64, 64)
+    main_player = Player(RED, 64, 64, is_zombie=False)
     player_sprites_list.add(main_player)
     main_player.rect.x = 20
     main_player.rect.y = HEIGHT / 2
@@ -376,8 +376,8 @@ def multiplayer_screen():
         elem.rect.y = 0
         hearts2.append(elem)
 
-    main_player = Player(RED, 64, 64)
-    player2 = Player(RED, 80, 80)
+    main_player = Player(RED, 64, 64, is_zombie=False)
+    player2 = Player(RED, 80, 80, is_zombie=True)
 
     player_sprites_list.add(main_player)
     player2_sprites_list.add(player2)
