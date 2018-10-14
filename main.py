@@ -146,6 +146,9 @@ def singleplayer_screen():
     global current_state
 
     time_since_start_ms = 0
+    for event in events:
+        events[event]["count"] = 0
+
     stage_theme.play(loops=-1)
     player_sprites_list = pygame.sprite.Group()
     enemy_sprites_list = pygame.sprite.Group()
@@ -184,6 +187,7 @@ def singleplayer_screen():
     game_loop = True
     while game_loop:
 
+        print(time_since_start_ms)
         time_since_start_ms += clock.get_time()
 
         # Main event loop
@@ -340,6 +344,9 @@ def multiplayer_screen():
     global current_state
 
     time_since_start_ms = 0
+    for event in events:
+        events[event]["count"] = 0
+
     stage_theme.play(loops=-1)
     player_sprites_list = pygame.sprite.Group()
     player2_sprites_list = pygame.sprite.Group()
