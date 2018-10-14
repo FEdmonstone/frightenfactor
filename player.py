@@ -51,7 +51,7 @@ class Player(pygame.sprite.Sprite):
         if not self.can_shoot:
             return None
         else:
-            bullet = Bullet(64, 64)
+            bullet = Bullet(64, 64, is_spit=False)
             if(self.last_direction == 'right'):
                 bullet.rect.x = self.rect.x + 45
                 bullet.rect.y = self.rect.y + 35

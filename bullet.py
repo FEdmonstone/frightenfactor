@@ -2,12 +2,16 @@ import pygame
 WHITE = (255, 255, 255)
 
 class Bullet(pygame.sprite.Sprite):
-    def __init__(self, width, height):
+    def __init__(self, width, height, is_spit):
         super().__init__()
 
         self.speed = 10
         self.direction = 'right'
-        self.image = pygame.image.load("Assets/Sprites/bullet.png").convert_alpha()
+        if is_spit:
+            self.image = pygame.image.load("Assets/Sprites/zombiespit.png").convert_alpha()
+        else:
+            self.image = pygame.image.load("Assets/Sprites/bullet.png").convert_alpha()
+
         self.rect = self.image.get_rect()
 
 

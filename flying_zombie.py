@@ -33,7 +33,7 @@ class FlyingZombie(Enemy):
 
     def shoot(self):
         if self.can_shoot:
-            bullet = Bullet(64, 64)
+            bullet = Bullet(64, 64, is_spit=True)
             bullet.rect.x = self.rect.x
             bullet.rect.y = self.rect.y
             bullet.direction = "down"
