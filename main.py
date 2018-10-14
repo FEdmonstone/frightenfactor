@@ -75,13 +75,11 @@ main_menu = Main_menu(WIDTH, HEIGHT)
 
 # Event timers
 # Generate time-based events
-def generate_time_based_events():
-
-    ms_elapsed = pygame.time.get_ticks()
+def generate_time_based_events(time_elapsed_ms):
 
     # Check whether we should trigger any of the events
     for event_type, event_props in events.items():
-        if ms_elapsed / event_props["interval"] > event_props["count"]:
+        if time_elapsed_ms / event_props["interval"] > event_props["count"]:
             new_event = pygame.event.Event(pygame.USEREVENT, {"subtype": event_type})
             pygame.event.post(new_event)
             event_props["count"] += 1
@@ -146,6 +144,8 @@ def main_menu_screen():
 
 def singleplayer_screen():
     global current_state
+
+    time_since_start_ms = 0
     stage_theme.play(loops=-1)
     player_sprites_list = pygame.sprite.Group()
     enemy_sprites_list = pygame.sprite.Group()
@@ -183,6 +183,9 @@ def singleplayer_screen():
     
     game_loop = True
     while game_loop:
+
+        time_since_start_ms += clock.get_time()
+
         # Main event loop
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -330,12 +333,13 @@ def singleplayer_screen():
         clock.tick(60)
 
         # Timer updates
-        generate_time_based_events()
+        generate_time_based_events(time_since_start_ms)
 
 def multiplayer_screen():
 
     global current_state
 
+    time_since_start_ms = 0
     stage_theme.play(loops=-1)
     player_sprites_list = pygame.sprite.Group()
     player2_sprites_list = pygame.sprite.Group()
@@ -391,6 +395,8 @@ def multiplayer_screen():
 
     game_loop = True
     while game_loop:
+
+        time_since_start_ms += clock.get_time()
 
         # Main event loop
         for event in pygame.event.get():
@@ -572,7 +578,7 @@ def multiplayer_screen():
         clock.tick(60)
 
         # Timer updates
-        generate_time_based_events()
+        generate_time_based_events(time_since_start_ms)
 
 def help_screen():
 
