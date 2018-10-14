@@ -29,6 +29,14 @@ class Player(pygame.sprite.Sprite):
 
         self.counter = 0
         self.last_direction = 'right'
+        
+        self.hit = False
+        self.redFlash = 0
+        
+        self.rightRed = pygame.image.load("Assets/Sprites/Player/RedPlayer/mcright-red.png").convert_alpha()
+        self.leftRed = pygame.image.load("Assets/Sprites/Player/RedPlayer/mcleft-red.png").convert_alpha()
+        self.downRed = pygame.image.load("Assets/Sprites/Player/RedPlayer/mcdown-red.png").convert_alpha()
+        self.upRed = pygame.image.load("Assets/Sprites/Player/RedPlayer/mcup-red.png").convert_alpha()
 
     def shoot(self):
         if not self.can_shoot:
@@ -60,8 +68,15 @@ class Player(pygame.sprite.Sprite):
         if self.rect.x != (borders[0] - self.width) and self.rect.x < (borders[0] - self.width):
             self.rect.x += self.speed
 
-            self.image = self.right_sprites[(self.counter // 10) % len(self.right_sprites)]
-            self.counter += 1
+            if self.hit:
+                self.image = self.rightRed
+                self.redFlash += 1
+                if self.redFlash == 10:
+                    self.hit = False
+                    self.redFlash = 0
+            else:
+                self.image = self.right_sprites[(self.counter // 10) % len(self.right_sprites)]
+                self.counter += 1
             self.faces_right = True
 
     def moveLeft(self):
@@ -69,8 +84,15 @@ class Player(pygame.sprite.Sprite):
         if self.rect.x != 0 and self.rect.x > 0:
             self.rect.x -= self.speed
 
-            self.image = self.left_sprites[(self.counter // 10) % len(self.left_sprites)]
-            self.counter += 1
+            if self.hit:
+                self.image = self.leftRed
+                self.redFlash += 1
+                if self.redFlash == 10:
+                    self.hit = False
+                    self.redFlash = 0
+            else:
+                self.image = self.left_sprites[(self.counter // 10) % len(self.left_sprites)]
+                self.counter += 1
             self.faces_right = False
 
     def moveUp(self, borders):
@@ -78,13 +100,27 @@ class Player(pygame.sprite.Sprite):
         if self.rect.y != borders[2] and self.rect.y > borders[2]:
             self.rect.y -= self.speed
 
-            self.image = self.up_sprites[(self.counter // 10) % len(self.up_sprites)]
-            self.counter += 1
+            if self.hit:
+                self.image = self.upRed
+                self.redFlash += 1
+                if self.redFlash == 10:
+                    self.hit = False
+                    self.redFlash = 0
+            else:
+                self.image = self.up_sprites[(self.counter // 10) % len(self.up_sprites)]
+                self.counter += 1
 
     def moveDown(self, borders):
         self.last_direction = 'down'
         if self.rect.y != (borders[1] - self.height) and self.rect.y < (borders[1] - self.height):
             self.rect.y += self.speed
 
-            self.image = self.down_sprites[(self.counter // 10) % len(self.down_sprites)]
-            self.counter += 1
+            if self.hit:
+                self.image = self.downRed
+                self.redFlash += 1
+                if self.redFlash == 10:
+                    self.hit = False
+                    self.redFlash = 0
+            else:
+                self.image = self.down_sprites[(self.counter // 10) % len(self.down_sprites)]
+                self.counter += 1

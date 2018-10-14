@@ -261,7 +261,7 @@ def singleplayer_screen():
             enemy_sprites_list.remove(enemy[0])
 
         # Kills player when they collide with enemy
-        for player in pygame.sprite.groupcollide(player_sprites_list, enemy_sprites_list, 0, 0):
+        for player in pygame.sprite.groupcollide(player_sprites_list, enemy_sprites_list, 0, 0).keys():
             if not invincible:
                 zombie_attack_melee_sound.play()
                 player_hit.play()
@@ -269,9 +269,10 @@ def singleplayer_screen():
                 current.kill()
                 del hearts[-1]
                 invincible = True
+                player.hit = True
                 pygame.time.set_timer(INVINCIBILITY_END, INVINCIBILITY_DURATION)
 
-        for player in pygame.sprite.groupcollide(player_sprites_list, spit_sprites, 0, 1):
+        for player in pygame.sprite.groupcollide(player_sprites_list, spit_sprites, 0, 1).keys():
             if not invincible:
                 bullet_hit_sound.play()
                 player_hit.play()
@@ -279,6 +280,7 @@ def singleplayer_screen():
                 current.kill()
                 del hearts[-1]
                 invincible = True
+                player.hit = True
                 pygame.time.set_timer(INVINCIBILITY_END, INVINCIBILITY_DURATION)
 
         if not hearts:
