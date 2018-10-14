@@ -251,6 +251,7 @@ def singleplayer_screen():
 
         #screen.blit(counting_text, counting_rect)
         if int(counting_minutes) == 0 and counting_seconds == 0:
+            current_state = screen_states['congrats']
             game_loop = False
         #screen.blit(counting_text, counting_rect)
         #pygame.display.update()
@@ -479,6 +480,7 @@ def multiplayer_screen():
 
         screen.blit(counting_text, counting_rect)
         if int(counting_minutes) == 0 and counting_seconds == 0:
+            current_state = screen_states['congrats']
             game_loop = False
         # screen.blit(counting_text, counting_rect)
         # pygame.display.update()
@@ -626,6 +628,48 @@ def help_screen():
         pygame.display.flip()
         clock.tick(60)
 
+def congrats_screen():
+
+    congrats = Game_Over(WIDTH, HEIGHT)
+
+    global current_state
+    congrats_loop = True
+
+    def button(x,y,w,h,button_type):
+        global frozen
+        global current_state
+        if congrats_loop:
+            mouse = pygame.mouse.get_pos()
+            click = pygame.mouse.get_pressed()
+            if x+w > mouse[0] > x and y+h > mouse[1] > y:
+                if click[0] == 1:
+                    frozen = False
+                    if button_type == 'back':
+                        current_state = screen_states['mainmenu']
+                        return False
+                    if button_type == 'quit':
+                        current_state = screen_states['quit']
+                        return False
+            return True
+
+    while congrats_loop:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                current_state = screen_states['quit']
+                congrats_loop = False
+            
+                
+        congrats_loop = button(WIDTH / 2 - 128, HEIGHT / 2 - 32, 254,  64, 'back')
+        congrats_loop = button(WIDTH / 2 - 128, HEIGHT / 2 + 35, 256, 64, 'quit')
+        go_background = pygame.image.load("Assets/Backgrounds/congratulations.png").convert_alpha()
+            
+        screen.blit(go_background, (0, HEIGHT/3-100))
+        congrats.button_sprites_list.update()
+        congrats.button_sprites_list.draw(screen)
+
+        pygame.display.flip()
+        clock.tick(60)
+
 def game_over_screen():
 
     game_over = Game_Over(WIDTH, HEIGHT)
@@ -675,6 +719,7 @@ screen_states = {
     'singleplayer': 1,
     'multiplayer': 2,
     'help': 3,
+    'congrats': 7,
     'game_over': 8,
     'quit': 9
 }
@@ -689,6 +734,8 @@ while main_loop:
         multiplayer_screen()
     elif current_state == screen_states['help']:
         help_screen()
+    elif current_state == screen_states['congrats']:
+        congrats_screen()
     elif current_state == screen_states['game_over']:
         game_over_screen()
     elif current_state == screen_states['quit']:
