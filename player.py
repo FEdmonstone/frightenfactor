@@ -15,6 +15,8 @@ class Player(pygame.sprite.Sprite):
 
         zombie_left_sprites_path = "Assets/Sprites/ZombieLord/Left"
         zombie_right_sprites_path = "Assets/Sprites/ZombieLord/Right"
+        zombie_up_sprites_path = "Assets/Sprites/ZombieLord/Up"
+        zombie_down_sprites_path = "Assets/Sprites/ZombieLord/Down"
 
         self.left_sprites = [pygame.image.load(os.path.join(move_left_sprites_path, img)) for img in os.listdir(move_left_sprites_path)]
         self.right_sprites = [pygame.image.load(os.path.join(move_right_sprites_path, img)) for img in os.listdir(move_right_sprites_path)]
@@ -23,6 +25,9 @@ class Player(pygame.sprite.Sprite):
 
         self.left_zombie_sprites = [pygame.image.load(os.path.join(zombie_left_sprites_path, img)) for img in os.listdir(zombie_left_sprites_path) if os.path.isfile(os.path.join(zombie_left_sprites_path, img))]
         self.right_zombie_sprites = [pygame.image.load(os.path.join(zombie_right_sprites_path, img)) for img in os.listdir(zombie_right_sprites_path) if os.path.isfile(os.path.join(zombie_right_sprites_path, img))]
+        self.up_zombie_sprites = [pygame.image.load(os.path.join(zombie_up_sprites_path, img)) for img in os.listdir(zombie_up_sprites_path) if os.path.isfile(os.path.join(zombie_up_sprites_path, img))]
+        self.down_zombie_sprites = [pygame.image.load(os.path.join(zombie_down_sprites_path, img)) for img in os.listdir(zombie_down_sprites_path) if os.path.isfile(os.path.join(zombie_down_sprites_path, img))]
+
 
         self.image = self.right_sprites[1] if not is_zombie else self.left_zombie_sprites[0]
         self.rect = self.image.get_rect()
@@ -118,10 +123,8 @@ class Player(pygame.sprite.Sprite):
             self.rect.y -= self.speed
 
             if self.is_zombie:
-                if self.faces_right:
-                    self.image = self.right_zombie_sprites[(self.counter // 10) % len(self.right_zombie_sprites)]
-                else:
-                    self.image = self.left_zombie_sprites[(self.counter // 10) % len(self.left_zombie_sprites)]
+                self.image = self.up_zombie_sprites[(self.counter // 10) % len(self.up_zombie_sprites)]
+                self.counter += 1
             else:
                 if self.hit:
                     self.image = self.upRed
@@ -139,10 +142,8 @@ class Player(pygame.sprite.Sprite):
             self.rect.y += self.speed
 
             if self.is_zombie:
-                if self.faces_right:
-                    self.image = self.right_zombie_sprites[(self.counter // 10) % len(self.right_zombie_sprites)]
-                else:
-                    self.image = self.left_zombie_sprites[(self.counter // 10) % len(self.left_zombie_sprites)]
+                self.image = self.down_zombie_sprites[(self.counter // 10) % len(self.down_zombie_sprites)]
+                self.counter += 1
             else:
                 if self.hit:
                     self.image = self.downRed
