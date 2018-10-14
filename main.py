@@ -7,6 +7,7 @@ from bullet import Bullet
 from health import Health
 from main_menu import Main_menu
 from help_menu import Help_menu
+from game_over import Game_Over
 from basic_zombie import BasicZombie
 from flying_zombie import FlyingZombie
 from drawing_manager import *
@@ -282,6 +283,7 @@ def singleplayer_screen():
 
         if not hearts:
             pygame.sprite.groupcollide(player_sprites_list, enemy_sprites_list, 1, 0)
+            current_state = screen_states['game_over']
             game_loop = False
 
         player_sprites_list.update()
@@ -481,7 +483,7 @@ def multiplayer_screen():
                 pygame.time.set_timer(INVINCIBILITY_END, INVINCIBILITY_DURATION)
         if not hearts2:
             #global current_state
-            current_state = screen_states['mainmenu']
+            current_state = screen_states['game_over']
             game_loop = False
 
         for player in pygame.sprite.groupcollide(player_sprites_list, enemy_sprites_list, 0, 0):
@@ -505,7 +507,7 @@ def multiplayer_screen():
                 pygame.time.set_timer(INVINCIBILITY_END, INVINCIBILITY_DURATION)
         if not hearts:
             #global current_state
-            current_state = screen_states['mainmenu']
+            current_state = screen_states['game_over']
             game_loop = False
 
         for player in pygame.sprite.groupcollide(player2_sprites_list, player_sprites_list, 0, 0):
@@ -606,6 +608,48 @@ def help_screen():
         pygame.display.flip()
         clock.tick(60)
 
+def game_over_screen():
+
+    game_over = Game_Over(WIDTH, HEIGHT)
+
+    global current_state
+    game_over_loop = True
+
+    def button(x,y,w,h,button_type):
+        global frozen
+        global current_state
+        if game_over_loop:
+            mouse = pygame.mouse.get_pos()
+            click = pygame.mouse.get_pressed()
+            if x+w > mouse[0] > x and y+h > mouse[1] > y:
+                if click[0] == 1:
+                    frozen = False
+                    if button_type == 'back':
+                        current_state = screen_states['mainmenu']
+                        return False
+                    if button_type == 'quit':
+                        current_state = screen_states['quit']
+                        return False
+            return True
+
+    while game_over_loop:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                current_state = screen_states['quit']
+                game_over_loop = False
+            
+                
+        game_over_loop = button(WIDTH / 2 - 128, HEIGHT / 2 - 32, 254,  64, 'back')
+        game_over_loop = button(WIDTH / 2 - 128, HEIGHT / 2 + 35, 256, 64, 'quit')
+        go_background = pygame.image.load("Assets/Backgrounds/game_over.png").convert_alpha()
+            
+        screen.blit(go_background, (0, HEIGHT/3-100))
+        game_over.button_sprites_list.update()
+        game_over.button_sprites_list.draw(screen)
+
+        pygame.display.flip()
+        clock.tick(60)
+
 
 
 screen_states = {
@@ -613,6 +657,7 @@ screen_states = {
     'singleplayer': 1,
     'multiplayer': 2,
     'help': 3,
+    'game_over': 8,
     'quit': 9
 }
 
@@ -626,6 +671,8 @@ while main_loop:
         multiplayer_screen()
     elif current_state == screen_states['help']:
         help_screen()
+    elif current_state == screen_states['game_over']:
+        game_over_screen()
     elif current_state == screen_states['quit']:
         main_loop = False
 
